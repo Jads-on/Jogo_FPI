@@ -1,28 +1,37 @@
-# Nome do executável e do arquivo de código
-TARGET = meu_jogo
-SRC = main.c
+# Define as pastas de origem
+SRC_DIR = Fontes
+INC_DIR = Headers
 
-# Compilador e flags de compilação
+# Nomes dos arquivos-fonte (sem o caminho)
+SRC_FILES_NAMES = main.c jogador.c tiros.c
+
+# Constrói o caminho completo para os arquivos-fonte
+SRC_FILES = $(addprefix $(SRC_DIR)/, $(SRC_FILES_NAMES))
+
+# Define os arquivos objeto (o que é gerado depois da compilação)
+OBJ_FILES = $(SRC_FILES_NAMES:.c=.o)
+
+# Outras configurações
 CC = gcc
-CFLAGS = -Iinclude -std=c99 -Wall -g
-LDFLAGS = -Llib -L/usr/lib -L/usr/local/lib -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
-#LDFLAGS = -Llib -lraylib -lGL -lm -lpthread -ldl -lrt -lX11 (linha original)
+CFLAGS = -Wall -std=c99 -I$(INC_DIR) # <- ADICIONADO: diz para o compilador procurar cabeçalhos na pasta Headers
+LDFLAGS = -lraylib -lm
 
-# Caminhos do projeto
-BUILD_DIR = build
-SRC_DIR = .
+TARGET = meu_jogo
 
-# Regra para compilar e linkar
-$(BUILD_DIR)/$(TARGET): $(SRC_DIR)/$(SRC)
-	@mkdir -p $(BUILD_DIR)
-	@$(CC) $(SRC_DIR)/$(SRC) -o $(BUILD_DIR)/$(TARGET) $(CFLAGS) $(LDFLAGS)
+all: $(TARGET)
 
-# Regra para rodar o executável
-run: $(BUILD_DIR)/$(TARGET)
-	@$(BUILD_DIR)/$(TARGET)
+# Regra para vincular os arquivos objeto em um executável
+$(TARGET): $(OBJ_FILES)
+	$(CC) $^ -o $@ $(LDFLAGS)
 
-# Regra para limpar os arquivos gerados
+# Regra para compilar cada arquivo .c em seu respectivo .o
+# O $< é uma variável automática que se refere ao primeiro pré-requisito
+# O $@ se refere ao nome do alvo
+%.o: $(SRC_DIR)/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+run: $(TARGET)
+	./$(TARGET)
+
 clean:
-	@rm -rf $(BUILD_DIR)
-
-.PHONY: all run clean
+	rm -f $(TARGET) $(OBJ_FILES)
