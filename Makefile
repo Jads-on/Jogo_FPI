@@ -3,7 +3,7 @@ SRC_DIR = Fontes
 INC_DIR = Headers
 
 # Nomes dos arquivos-fonte (sem o caminho)
-SRC_FILES_NAMES = main.c jogador.c tiros.c
+SRC_FILES_NAMES = main.c jogador.c tiros.c cJSON.c
 
 # Constrói o caminho completo para os arquivos-fonte
 SRC_FILES = $(addprefix $(SRC_DIR)/, $(SRC_FILES_NAMES))
