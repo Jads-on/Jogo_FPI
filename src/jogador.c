@@ -3,6 +3,8 @@
 #include "tiros.h"
 #include <stdio.h>
 
+Bala bala;
+
 void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial, int vida_padrao, float velocidade_padrao){
     
     //inicia as variaveis pra evitar bugs com lixo de memoria
@@ -44,17 +46,18 @@ void JogadorUpdate(Jogador *jogador){
 
 //mecanica do tiro do jogador
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-        Vector2 alvo = {0.0f, 0.0f},
-                direcao_tiro = {0.0f, 0.0f};
         float angulo_rotacao_tiro = 0.0;
+        Vector2 alvo = {0.0f, 0.0f},
+            direcao_tiro = {0.0f, 0.0f};
 
-            alvo.x = GetMouseX(),
-            alvo.y = GetMouseY();
+        alvo.x = GetMouseX(),
+        alvo.y = GetMouseY();
         
         direcao_tiro = Vector2Subtract(alvo, jogador->posicao);
-        angulo_rotacao_tiro = atan2f(direcao_tiro.y, direcao_tiro.x) * RAD2DEG; // Calcula a rotação da bala (converte O atan2f para graus com RAD2DEG)
-            Tiro_Jogador(jogador->posicao, direcao_tiro, angulo_rotacao_tiro, alvo);
 
+        angulo_rotacao_tiro = atan2f(direcao_tiro.y, direcao_tiro.x) * RAD2DEG; // Calcula a rotação da bala (converte O atan2f para graus com RAD2DEG)
+        
+        Tiro_Jogador(jogador->posicao, direcao_tiro, angulo_rotacao_tiro, alvo);
     }
     
 }

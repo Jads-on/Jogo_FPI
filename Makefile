@@ -1,6 +1,6 @@
 # Define as pastas de origem
-SRC_DIR = Fontes
-INC_DIR = Headers
+SRC_DIR = src
+INC_DIR = include
 
 # Nomes dos arquivos-fonte (sem o caminho)
 SRC_FILES_NAMES = main.c jogador.c tiros.c

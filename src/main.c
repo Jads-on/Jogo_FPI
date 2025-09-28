@@ -23,6 +23,7 @@ int main(void){
 
     //inicializacao
     IniciarJogador(&jogador, Posicao_Inicial_Jogador, vida_padrao, velocidade_padrao);
+    IniciarTiros();
 
     InitWindow(largura_tela, altura_tela, "JOGO");
 
