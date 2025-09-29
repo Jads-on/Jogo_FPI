@@ -1,37 +1,55 @@
-# Define as pastas de origem
-SRC_DIR = src
-INC_DIR = include
+# ===========================================================
+#                     CONFIGURAÇÃO DO COMPILADOR
+# ===========================================================
 
-# Nomes dos arquivos-fonte (sem o caminho)
-SRC_FILES_NAMES = main.c jogador.c tiros.c
-
-# Constrói o caminho completo para os arquivos-fonte
-SRC_FILES = $(addprefix $(SRC_DIR)/, $(SRC_FILES_NAMES))
-
-# Define os arquivos objeto (o que é gerado depois da compilação)
-OBJ_FILES = $(SRC_FILES_NAMES:.c=.o)
-
-# Outras configurações
 CC = gcc
-CFLAGS = -Wall -std=c99 -I$(INC_DIR) # <- ADICIONADO: diz para o compilador procurar cabeçalhos na pasta Headers
-LDFLAGS = -lraylib -lm
+CFLAGS = -Wall -Wextra -std=c11 -Iinclude
+BUILD_DIR = build
 
-TARGET = meu_jogo
+# ===========================================================
+#                     ARQUIVOS-FONTE
+# ===========================================================
 
-all: $(TARGET)
+SRC = src/main.c src/jogador.c src/tiros.c
+OBJ = $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(SRC))
 
-# Regra para vincular os arquivos objeto em um executável
-$(TARGET): $(OBJ_FILES)
-	$(CC) $^ -o $@ $(LDFLAGS)
+OUT = Jogo
 
-# Regra para compilar cada arquivo .c em seu respectivo .o
-# O $< é uma variável automática que se refere ao primeiro pré-requisito
-# O $@ se refere ao nome do alvo
-%.o: $(SRC_DIR)/%.c
+# Caminho para a Raylib estática
+RAYLIB_LIB = ./lib/libraylib.a
+
+# Dependências extras necessárias no Linux (dinâmicas)
+LDLIBS = $(RAYLIB_LIB) -lm -lpthread -ldl -lrt -lX11
+
+# ===========================================================
+#                     REGRAS
+# ===========================================================
+
+# Regra padrão
+all: $(OUT)
+
+# Compilação do executável
+$(OUT): $(OBJ)
+	@echo "🔗 Linking executable: $@"
+	$(CC) $(OBJ) $(LDLIBS) -o $(OUT)
+
+# Compilação dos objetos dentro de build/
+$(BUILD_DIR)/%.o: src/%.c | $(BUILD_DIR)
+	@echo "🔨 Compiling $< -> $@"
 	$(CC) $(CFLAGS) -c $< -o $@
 
-run: $(TARGET)
-	./$(TARGET)
+# Garante que a pasta build exista
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
+# Regra para executar o jogo
+run: $(OUT)
+	@echo "🚀 Running game..."
+	./$(OUT)
+
+# Limpeza
 clean:
-	rm -f $(TARGET) $(OBJ_FILES)
+	@echo "🧹 Cleaning up..."
+	rm -rf $(BUILD_DIR) $(OUT)
+
+.PHONY: all clean run
