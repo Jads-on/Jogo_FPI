@@ -2,6 +2,7 @@
 #include "tiros.h"
 #include "raymath.h"
 #define MAX_BALAS 30
+#define VELOCIDADE_TIRO 750
 #define Dano_Bala_Padrao 10
 #define Dano_Bala_Perfurante 20
 #define Dano_Bala_Explosiva 5
@@ -11,10 +12,16 @@ static Bala balas[MAX_BALAS];
 void IniciarTiros(){ //evita lixo de memoria e bugs 
 
     for(int i = 0; i < MAX_BALAS; i++){
-        balas[i].ativo = false;
         balas[i].posicao = (Vector2){0, 0};
-        balas[i].tipo = 0;
+        balas[i].direcao = (Vector2){0, 0};
+        balas[i].angulo = 0;
+        balas[i].velocidade = 0;
         balas[i].dano = 0;
+        balas[i].ativo = false;
+        balas[i].tipo = 0;
+        balas[i].raio_bala = 5.0;
+        balas[i].explodir = false;
+        balas[i].tempo_explosao = 0.0;
     }
 
 }
@@ -22,7 +29,6 @@ void IniciarTiros(){ //evita lixo de memoria e bugs
 void Tiro_Jogador(Vector2 Posicao_Jogador, Vector2 direcao_tiro, float angulo_rotacao_tiro, int Tipo_Tiro){
 
     //variaveis necessarias pra o disparo
-    int velocidade_balas = 500;
     bool bala_usada = false; //flag que evita tiro duplo
     
     for(int idx = 0; idx < MAX_BALAS; idx++){ //usa limitadas balas 
@@ -35,28 +41,31 @@ void Tiro_Jogador(Vector2 Posicao_Jogador, Vector2 direcao_tiro, float angulo_ro
                     case Bala_Padrao:
                         balas[idx].dano = Dano_Bala_Padrao;
                         balas[idx].tipo = Bala_Padrao;
+                        balas[idx].velocidade = VELOCIDADE_TIRO;
                         break;
                     
                     case Bala_Perfurante:
                         balas[idx].dano = Dano_Bala_Perfurante;
                         balas[idx].tipo = Bala_Perfurante;
+                        balas[idx].velocidade = VELOCIDADE_TIRO * 2; //a bala reforcada tem o dobro de velocidade das outras
                         break;
                     
                     case Bala_Explosiva:
                         balas[idx].dano = Dano_Bala_Explosiva;
                         balas[idx].tipo = Bala_Explosiva;
+                        balas[idx].velocidade = VELOCIDADE_TIRO;
                         break;
                     
                     default:
                         balas[idx].dano = Dano_Bala_Padrao;
                         balas[idx].tipo = Bala_Padrao;
+                        balas[idx].velocidade = VELOCIDADE_TIRO;
                         break;
                 }
 
                 balas[idx].posicao = Posicao_Jogador;
                 balas[idx].angulo = angulo_rotacao_tiro;
                 balas[idx].direcao= Vector2Normalize(direcao_tiro);
-                balas[idx].velocidade = velocidade_balas;
                 balas[idx].ativo = true; //flag que identifique se a bala foi usada ou nao
 
                 bala_usada = true; //flag pra evitar uso de mais bala no mesmo disparo
@@ -101,6 +110,7 @@ void Tiro_Imagem_Jogador(){
                     
                 case Bala_Explosiva:
                     DrawCircleV(balas[i].posicao, 5, GREEN);
+
                     break;
                 
                 default:

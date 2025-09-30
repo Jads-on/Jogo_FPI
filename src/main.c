@@ -18,14 +18,13 @@ int main(void){
     //pre configuracoes do jogador
     Jogador jogador;
     Vector2 Posicao_Inicial_Jogador = (Vector2){largura_tela/2, altura_tela/2};
-    int velocidade_padrao= 500,
-        vida_padrao = 100;
 
     //inicializacao
-    IniciarJogador(&jogador, Posicao_Inicial_Jogador, vida_padrao, velocidade_padrao);
+    IniciarJogador(&jogador, Posicao_Inicial_Jogador);
     IniciarTiros();
 
     InitWindow(largura_tela, altura_tela, "JOGO");
+    SetTargetFPS(60);
 
     //looping do jogo
     while(!WindowShouldClose()){
@@ -39,7 +38,7 @@ int main(void){
             ClearBackground(RAYWHITE);
             JogadorImagem(jogador);
             Tiro_Imagem_Jogador();
-            
+                
         EndDrawing();
     }
     //encerramento

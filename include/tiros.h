@@ -5,6 +5,8 @@
 #include "jogador.h"
 
 typedef struct Bala {
+
+    //parametros para os tiros
     Vector2 posicao;
     Vector2 direcao;
     float angulo; 
@@ -12,6 +14,11 @@ typedef struct Bala {
     int dano;
     bool ativo;
     Tipo_Bala tipo;
+
+    //parametros para as colisoes
+    float raio_bala;
+    bool explodir;
+    double tempo_explosao;
 } Bala;
 
 void IniciarTiros();

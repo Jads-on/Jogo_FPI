@@ -2,23 +2,26 @@
 #include "raymath.h"
 #include "tiros.h"
 #include <stdio.h>
+
+#define VELOCIDADE_JOGADOR 500
+#define VIDA_JOGADOR 100;
 #define DURACAO_ENERGETICO 10.0  //duracao do efeito do energetico
 #define AUMENTO_DE_VELOCIDADE 2.0 //escolha o multiplo de aumento de velocidade (2.0x, 3.0x, etc)
 
 //procedimentos e funcoes
-void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial, int vida_padrao, float velocidade_padrao){
+void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
     
     //inicia as variaveis pra evitar bugs com lixo de memoria
     jogador->posicao.x = PosicaoInicial.x;
     jogador->posicao.y = PosicaoInicial.y;
-    jogador->velocidade = velocidade_padrao;
-    jogador->vida = vida_padrao;
+    jogador->velocidade = VELOCIDADE_JOGADOR;
+    jogador->vida = VIDA_JOGADOR;
     jogador->inventario.energeticos = 2;
     jogador->inventario.escudo = 0;
     jogador->inventario.efeitos.energetico_ativo = false;
     jogador->inventario.efeitos.energetico_duracao = 0.0;
-    jogador->inventario.municao_explosiva = 0;
-    jogador->inventario.municao_perfurante = 0;   
+    jogador->inventario.municao_explosiva = 2;
+    jogador->inventario.municao_perfurante = 2;   
     jogador->Tipo_Tiro = Bala_Padrao; 
 
 }

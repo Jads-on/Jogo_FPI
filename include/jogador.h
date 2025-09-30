@@ -3,19 +3,19 @@
 
 #include "raylib.h"
 
-typedef enum Tipo_Bala{
+typedef enum Tipo_Bala{ 
     Bala_Padrao = 0,
     Bala_Explosiva = 1,
     Bala_Perfurante = 2
 }Tipo_Bala;
 
-typedef struct Efeitos{
+typedef struct Efeitos{ //efeitos recebidos pelos consumiveis
     //Energetico
     bool energetico_ativo;
     double energetico_duracao;
 }Efeitos;
 
-typedef struct Inventario{
+typedef struct Inventario{ //controle da quantidade de itens consumives que o jogador possui
     int municao_explosiva,
         municao_perfurante,
         energeticos,
@@ -33,7 +33,7 @@ typedef struct Jogador{
 
 }Jogador;
 
-void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial,int vida_padrao, float velocidade_padrao);
+void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial);
 
 void JogadorUpdate(Jogador *jogador);
 
