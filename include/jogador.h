@@ -18,8 +18,7 @@ typedef struct Efeitos{ //efeitos recebidos pelos consumiveis
 typedef struct Inventario{ //controle da quantidade de itens consumives que o jogador possui
     int municao_explosiva,
         municao_perfurante,
-        energeticos,
-        escudo;
+        energeticos;
     Efeitos efeitos;
 
 } Inventario;
@@ -39,5 +38,9 @@ void JogadorUpdate(Jogador *jogador);
 
 void JogadorImagem(Jogador jogador);
 
+void JogadorVidaImagem(Jogador jogador);
 
+void JogadorEnergeticoImagem(Jogador jogador);
+
+void DescarregarAssets();
 #endif

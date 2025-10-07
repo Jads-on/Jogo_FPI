@@ -5,8 +5,16 @@
 
 #define VELOCIDADE_JOGADOR 500
 #define VIDA_JOGADOR 100;
-#define DURACAO_ENERGETICO 10.0  //duracao do efeito do energetico
+#define DURACAO_ENERGETICO 5.0  //duracao do efeito do energetico
 #define AUMENTO_DE_VELOCIDADE 2.0 //escolha o multiplo de aumento de velocidade (2.0x, 3.0x, etc)
+#define RECUPERACAO_ENERGETICO 20 //recupera um pouco da vida apos tomar
+#define POSICAO_BARRA_X 90
+#define POSICAO_BARRA_Y 0
+#define ESPACO_ENTRE_BARRAS 50
+
+// Parametros das imagens usadas pelo jogador
+static Texture2D textura_barra_vida[6],
+                 textura_barra_energetico[6];
 
 //procedimentos e funcoes
 void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
@@ -17,17 +25,32 @@ void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
     jogador->velocidade = VELOCIDADE_JOGADOR;
     jogador->vida = VIDA_JOGADOR;
     jogador->inventario.energeticos = 2;
-    jogador->inventario.escudo = 0;
     jogador->inventario.efeitos.energetico_ativo = false;
     jogador->inventario.efeitos.energetico_duracao = 0.0;
     jogador->inventario.municao_explosiva = 2;
     jogador->inventario.municao_perfurante = 2;   
     jogador->Tipo_Tiro = Bala_Padrao; 
 
+    //carrega a textura das barras
+        //Barra de vida
+        textura_barra_vida[0] = LoadTexture("assets/sprites/barras/vida/0.png");
+        textura_barra_vida[1] = LoadTexture("assets/sprites/barras/vida/1.png");
+        textura_barra_vida[2] = LoadTexture("assets/sprites/barras/vida/2.png");
+        textura_barra_vida[3] = LoadTexture("assets/sprites/barras/vida/3.png");
+        textura_barra_vida[4] = LoadTexture("assets/sprites/barras/vida/4.png");
+        textura_barra_vida[5] = LoadTexture("assets/sprites/barras/vida/5.png");
+
+        //Barra de energetico
+        textura_barra_energetico[0] = LoadTexture("assets/sprites/barras/energetico/0.png");
+        textura_barra_energetico[1] = LoadTexture("assets/sprites/barras/energetico/1.png");
+        textura_barra_energetico[2] = LoadTexture("assets/sprites/barras/energetico/2.png");
+        textura_barra_energetico[3] = LoadTexture("assets/sprites/barras/energetico/3.png");
+        textura_barra_energetico[4] = LoadTexture("assets/sprites/barras/energetico/4.png");
+        textura_barra_energetico[5] = LoadTexture("assets/sprites/barras/energetico/5.png");
 }
 
 void JogadorImagem(Jogador jogador){
-    //aqui ficara as sprites do protagonista
+//aqui ficara as sprites do protagonista
     DrawRectangle(jogador.posicao.x, jogador.posicao.y, 200, 200, RED);
 }
 
@@ -105,6 +128,15 @@ void JogadorUpdate(Jogador *jogador){
             
             // Aplica o efeito
             jogador->velocidade *= AUMENTO_DE_VELOCIDADE;
+
+            //regeneração de vida
+            if(jogador->vida <= 95){
+                jogador->vida += RECUPERACAO_ENERGETICO;
+            }
+            else{
+                jogador->vida = 100;
+            }
+
             jogador->inventario.energeticos -= 1;
         }
     }
@@ -119,4 +151,53 @@ void JogadorUpdate(Jogador *jogador){
         }
     }
 
+    if(IsKeyPressed(KEY_U)){
+        jogador->vida -= 20;
+    }
+}
+
+void JogadorVidaImagem(Jogador jogador){
+    int nivel_barra_vida = jogador.vida / 20;
+
+    if(nivel_barra_vida <= 0){
+        nivel_barra_vida = 0;
+    }
+    else if(nivel_barra_vida >= 5){
+        nivel_barra_vida = 5;
+    }
+
+    DrawTexture(textura_barra_vida[nivel_barra_vida], POSICAO_BARRA_X, POSICAO_BARRA_Y - ESPACO_ENTRE_BARRAS, WHITE);
+}
+
+void JogadorEnergeticoImagem(Jogador jogador){
+    if(jogador.inventario.efeitos.energetico_ativo == false){
+        return;
+    }
+
+    //caso o energetico seja ativado
+    const double tempo_por_nivel = DURACAO_ENERGETICO / 5.0;
+
+    double tempo_restante = jogador.inventario.efeitos.energetico_duracao - GetTime();
+
+    if(tempo_restante <= 0.0){
+        tempo_restante = 0.0;
+    }
+
+    //calculo do nivel de energia restante
+    int nivel_barra_energetico = (int)(tempo_restante / tempo_por_nivel);
+
+    if(nivel_barra_energetico >= 5){
+        nivel_barra_energetico = 5;
+    }
+    else if(nivel_barra_energetico <= 0){
+        nivel_barra_energetico = 0;
+    }
+
+    DrawTexture(textura_barra_energetico[nivel_barra_energetico], (POSICAO_BARRA_X), (POSICAO_BARRA_Y), WHITE);
+}
+
+void DescarregarAssets(){
+    for(int i = 0; i < 6; i++){
+        UnloadTexture(textura_barra_vida[i]);
+    }
 }
