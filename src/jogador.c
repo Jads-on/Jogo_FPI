@@ -150,10 +150,6 @@ void JogadorUpdate(Jogador *jogador){
 
         }
     }
-
-    if(IsKeyPressed(KEY_U)){
-        jogador->vida -= 20;
-    }
 }
 
 void JogadorVidaImagem(Jogador jogador){

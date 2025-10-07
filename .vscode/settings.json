@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "raylib.h": "c",
-        "jogador.h": "c"
+        "jogador.h": "c",
+        "raymath.h": "c"
     }
 }
