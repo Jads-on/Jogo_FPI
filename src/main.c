@@ -43,6 +43,7 @@ int main(void){
             //barras de vida e habilidades
             JogadorEnergeticoImagem(jogador);
             JogadorVidaImagem(jogador);
+            HudHabilidadesImagem(jogador);
             Tiro_Imagem_Jogador();
                 
         EndDrawing();

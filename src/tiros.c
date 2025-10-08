@@ -105,11 +105,11 @@ void Tiro_Imagem_Jogador(){
                     break;
                 
                 case Bala_Perfurante:
-                    DrawCircleV(balas[i].posicao, 5, YELLOW);
+                    DrawCircleV(balas[i].posicao, 5, GREEN);
                     break;
                     
                 case Bala_Explosiva:
-                    DrawCircleV(balas[i].posicao, 5, GREEN);
+                    DrawCircleV(balas[i].posicao, 5, ORANGE);
 
                     break;
                 

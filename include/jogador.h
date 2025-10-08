@@ -42,5 +42,7 @@ void JogadorVidaImagem(Jogador jogador);
 
 void JogadorEnergeticoImagem(Jogador jogador);
 
+void HudHabilidadesImagem(Jogador jogador);
+
 void DescarregarAssets();
 #endif

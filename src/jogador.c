@@ -4,17 +4,20 @@
 #include <stdio.h>
 
 #define VELOCIDADE_JOGADOR 500
-#define VIDA_JOGADOR 100;
+#define VIDA_JOGADOR 100
 #define DURACAO_ENERGETICO 5.0  //duracao do efeito do energetico
 #define AUMENTO_DE_VELOCIDADE 2.0 //escolha o multiplo de aumento de velocidade (2.0x, 3.0x, etc)
 #define RECUPERACAO_ENERGETICO 20 //recupera um pouco da vida apos tomar
 #define POSICAO_BARRA_X 90
 #define POSICAO_BARRA_Y 0
 #define ESPACO_ENTRE_BARRAS 50
+#define POSICAO_HUD_CENTRO_X 1675
+#define POSICAO_HUD_CENTRO_Y 800
 
 // Parametros das imagens usadas pelo jogador
 static Texture2D textura_barra_vida[6],
-                 textura_barra_energetico[6];
+                 textura_barra_energetico[6],
+                 hud_habilidades[3];
 
 //procedimentos e funcoes
 void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
@@ -47,6 +50,11 @@ void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
         textura_barra_energetico[3] = LoadTexture("assets/sprites/barras/energetico/3.png");
         textura_barra_energetico[4] = LoadTexture("assets/sprites/barras/energetico/4.png");
         textura_barra_energetico[5] = LoadTexture("assets/sprites/barras/energetico/5.png");
+    
+    //carrega o hud de habilidades
+        hud_habilidades[0] = LoadTexture("assets/sprites/hud_de_habilidades/energetico.png");
+        hud_habilidades[1] = LoadTexture("assets/sprites/hud_de_habilidades/tiro_explosivo.png");
+        hud_habilidades[2] = LoadTexture("assets/sprites/hud_de_habilidades/tiro_reforcado.png");
 }
 
 void JogadorImagem(Jogador jogador){
@@ -73,7 +81,6 @@ void JogadorUpdate(Jogador *jogador){
     jogador->posicao.y += mover.y * jogador->velocidade * variacao_tempo;
 
 //mecanica do tiro do jogador
-
     if(IsKeyPressed(KEY_Q)){ //botao que ativa o tiro explosivo
 
         if(jogador->inventario.municao_explosiva > 0){ //se o jogador tiver balas explosivas
@@ -97,9 +104,9 @@ void JogadorUpdate(Jogador *jogador){
         }
 
     }
-
-    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-        
+    
+    //detecta o momento que e solicitado o disparo
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){ 
         //inicializa o parametros usados no disparo
         float angulo_rotacao_tiro = 0.0;
         Vector2 alvo = {0.0f, 0.0f},
@@ -119,7 +126,6 @@ void JogadorUpdate(Jogador *jogador){
     }
 
 // mecanicas de power-up
-
     //energetico
     if(IsKeyPressed(KEY_E)){
         if((jogador->inventario.energeticos > 0) && (jogador->inventario.efeitos.energetico_ativo == false)){
@@ -141,10 +147,11 @@ void JogadorUpdate(Jogador *jogador){
         }
     }
 
+    //se o energetico esta ativo 
     if(jogador->inventario.efeitos.energetico_ativo == true){
-        if(GetTime() >= jogador->inventario.efeitos.energetico_duracao){
+        if(GetTime() >= jogador->inventario.efeitos.energetico_duracao){ //se a duracao do energetico acabou
 
-            jogador->velocidade /=AUMENTO_DE_VELOCIDADE;
+            jogador->velocidade /= AUMENTO_DE_VELOCIDADE; //reduz a velocidade
             jogador->inventario.efeitos.energetico_duracao = 0.0;
             jogador->inventario.efeitos.energetico_ativo = false;
 
@@ -153,8 +160,9 @@ void JogadorUpdate(Jogador *jogador){
 }
 
 void JogadorVidaImagem(Jogador jogador){
-    int nivel_barra_vida = jogador.vida / 20;
+    int nivel_barra_vida = jogador.vida / 20; //divide a vida total em partes iguais para cada nivel da barra de vida
 
+    //para casos de a vida ficar fora do intervalo definido por algum bug
     if(nivel_barra_vida <= 0){
         nivel_barra_vida = 0;
     }
@@ -166,15 +174,16 @@ void JogadorVidaImagem(Jogador jogador){
 }
 
 void JogadorEnergeticoImagem(Jogador jogador){
-    if(jogador.inventario.efeitos.energetico_ativo == false){
+    if(jogador.inventario.efeitos.energetico_ativo == false){ //caso o energetico nao esteja ativo, retorna sem fazer nada
         return;
     }
 
     //caso o energetico seja ativado
-    const double tempo_por_nivel = DURACAO_ENERGETICO / 5.0;
+    const double tempo_por_nivel = DURACAO_ENERGETICO / 5.0; //uso de const pois o tempo por nivel sempre sera o mesmo, sem alterar,uso de double pois GetTime retorna um double
 
-    double tempo_restante = jogador.inventario.efeitos.energetico_duracao - GetTime();
+    double tempo_restante = jogador.inventario.efeitos.energetico_duracao - GetTime(); //uso de double pois GetTime retorna um double
 
+    //caso o tempo restante saia do intervalo definido (evita bugs)
     if(tempo_restante <= 0.0){
         tempo_restante = 0.0;
     }
@@ -190,6 +199,19 @@ void JogadorEnergeticoImagem(Jogador jogador){
     }
 
     DrawTexture(textura_barra_energetico[nivel_barra_energetico], (POSICAO_BARRA_X), (POSICAO_BARRA_Y), WHITE);
+}
+
+void HudHabilidadesImagem(Jogador jogador){
+
+    if(jogador.inventario.energeticos > 0){
+        DrawTexture(hud_habilidades[0], POSICAO_HUD_CENTRO_X, POSICAO_HUD_CENTRO_Y, WHITE);
+    }
+    if(jogador.inventario.municao_explosiva > 0){
+        DrawTexture(hud_habilidades[1], (POSICAO_HUD_CENTRO_X + 85), (POSICAO_HUD_CENTRO_Y - 85), WHITE);
+    }
+    if(jogador.inventario.municao_perfurante > 0){
+        DrawTexture(hud_habilidades[2], (POSICAO_HUD_CENTRO_X + 105), (POSICAO_HUD_CENTRO_Y + 100), WHITE);
+    }
 }
 
 void DescarregarAssets(){
