@@ -2,6 +2,7 @@
     "files.associations": {
         "raylib.h": "c",
         "jogador.h": "c",
-        "raymath.h": "c"
+        "raymath.h": "c",
+        "fases_estados.h": "c"
     }
 }

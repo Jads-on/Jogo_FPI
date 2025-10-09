@@ -11,8 +11,8 @@
 #define POSICAO_BARRA_X 90
 #define POSICAO_BARRA_Y 0
 #define ESPACO_ENTRE_BARRAS 50
-#define POSICAO_HUD_CENTRO_X 1675
-#define POSICAO_HUD_CENTRO_Y 800
+#define POSICAO_HUD_CENTRO_X 1750
+#define POSICAO_HUD_CENTRO_Y 775
 
 // Parametros das imagens usadas pelo jogador
 static Texture2D textura_barra_vida[6],
@@ -160,6 +160,7 @@ void JogadorUpdate(Jogador *jogador){
 }
 
 void JogadorVidaImagem(Jogador jogador){
+    
     int nivel_barra_vida = jogador.vida / 20; //divide a vida total em partes iguais para cada nivel da barra de vida
 
     //para casos de a vida ficar fora do intervalo definido por algum bug
@@ -173,7 +174,8 @@ void JogadorVidaImagem(Jogador jogador){
     DrawTexture(textura_barra_vida[nivel_barra_vida], POSICAO_BARRA_X, POSICAO_BARRA_Y - ESPACO_ENTRE_BARRAS, WHITE);
 }
 
-void JogadorEnergeticoImagem(Jogador jogador){
+void JogadorEnergeticoImagem(Jogador jogador){ //desenho e posicionamento da barra de energia
+
     if(jogador.inventario.efeitos.energetico_ativo == false){ //caso o energetico nao esteja ativo, retorna sem fazer nada
         return;
     }
@@ -201,21 +203,28 @@ void JogadorEnergeticoImagem(Jogador jogador){
     DrawTexture(textura_barra_energetico[nivel_barra_energetico], (POSICAO_BARRA_X), (POSICAO_BARRA_Y), WHITE);
 }
 
-void HudHabilidadesImagem(Jogador jogador){
+void HudHabilidadesImagem(Jogador jogador){ //desenho e posicionamento do hud de habilidades
 
     if(jogador.inventario.energeticos > 0){
         DrawTexture(hud_habilidades[0], POSICAO_HUD_CENTRO_X, POSICAO_HUD_CENTRO_Y, WHITE);
     }
     if(jogador.inventario.municao_explosiva > 0){
-        DrawTexture(hud_habilidades[1], (POSICAO_HUD_CENTRO_X + 85), (POSICAO_HUD_CENTRO_Y - 85), WHITE);
+        DrawTexture(hud_habilidades[1], (POSICAO_HUD_CENTRO_X - 115), (POSICAO_HUD_CENTRO_Y - 80), WHITE);
     }
     if(jogador.inventario.municao_perfurante > 0){
-        DrawTexture(hud_habilidades[2], (POSICAO_HUD_CENTRO_X + 105), (POSICAO_HUD_CENTRO_Y + 100), WHITE);
+        DrawTexture(hud_habilidades[2], (POSICAO_HUD_CENTRO_X - 80), (POSICAO_HUD_CENTRO_Y + 105), WHITE);
     }
 }
 
 void DescarregarAssets(){
-    for(int i = 0; i < 6; i++){
+    for(int i = 0; i < 6; i++){ //descarrega todas as imagens
+
+        if(i < 3){ //descarrega o hud de habilidades
+            UnloadTexture(hud_habilidades[i]);
+        }
+
+        //descarrega as barras
         UnloadTexture(textura_barra_vida[i]);
+        UnloadTexture(textura_barra_energetico[i]);
     }
 }

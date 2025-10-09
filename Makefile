@@ -6,9 +6,9 @@ BUILD_DIR = build
 
 #  === ARQUIVOS-FONTE ===
 
-SRC = src/main.c src/jogador.c src/tiros.c
+SRC = src/main.c src/jogador.c src/tiros.c src/gestor_fases.c src/fase_1.c
 OBJ = $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(SRC))
-OUT = Jogo
+OUT = SYNTHETIC
 
 # Caminho para a Raylib estática
 RAYLIB_LIB = ./lib/libraylib.a
