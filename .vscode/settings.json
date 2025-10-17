@@ -3,6 +3,7 @@
         "raylib.h": "c",
         "jogador.h": "c",
         "raymath.h": "c",
-        "fases_estados.h": "c"
+        "fases_estados.h": "c",
+        "menu.h": "c"
     }
 }

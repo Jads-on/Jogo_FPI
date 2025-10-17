@@ -2,13 +2,18 @@
 #include "fases_estados.h"
 #include "gestor_fases.h"
 #include "fase_1.h"
+#include "menu.h"
+#include "creditos.h"
+#include "fase_1.h"
+#include "historia.h"
+
 
 void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
 
     switch (*estado){ //essas funcoes devem serd eclaradas nas bibliotecas de cada fase
 
     case ESTADO_MENU:
-        //Atualizar_Menu(estado);
+        Atualizar_Menu(estado, jogador);
         break;
     
     case ESTADO_FASE_1:
@@ -22,6 +27,14 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
     case ESTADO_GAMEOVER:
         //Atualizar_GameOver(estado);
         break;
+        
+    case ESTADO_HISTORIA:
+        Atualizar_Historia(estado);
+        break;
+
+    case ESTADO_CREDITOS:
+        Atualizar_Creditos(estado);
+        break;
 
     default:
         break;
@@ -32,7 +45,7 @@ void Desenhar_Jogo(Estados_Jogo estado, Jogador jogador){
 
     switch (estado){ //essas funcoes devem serd eclaradas nas bibliotecas de cada fase
     case ESTADO_MENU:
-        //DesenharMenu();
+        Desenhar_Menu();
         break;
     
     case ESTADO_FASE_1:
@@ -45,6 +58,14 @@ void Desenhar_Jogo(Estados_Jogo estado, Jogador jogador){
 
     case ESTADO_GAMEOVER:
         //DesenharGameOver(estado);
+        break;
+    
+    case ESTADO_HISTORIA:
+        Desenhar_Historia();
+        break;
+    
+    case ESTADO_CREDITOS:
+        Desenhar_Creditos();
         break;
         
     default:
