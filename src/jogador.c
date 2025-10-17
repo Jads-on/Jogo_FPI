@@ -157,6 +157,7 @@ void JogadorUpdate(Jogador *jogador){
 
         }
     }
+
 }
 
 void JogadorVidaImagem(Jogador jogador){

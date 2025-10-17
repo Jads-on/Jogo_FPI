@@ -4,7 +4,6 @@
 #include "fase_1.h"
 #include "menu.h"
 #include "creditos.h"
-#include "fase_1.h"
 #include "historia.h"
 
 

@@ -8,6 +8,9 @@
 #include "tiros.h"
 #include "fases_estados.h"
 #include "gestor_fases.h"
+#include "menu.h"
+#include "historia.h"
+#include "creditos.h"
 
 int main(void){
 
@@ -30,7 +33,6 @@ int main(void){
     SetTargetFPS(60);
     Iniciar_Menu();
 
-    
     //inicializacao
     IniciarJogador(&jogador, Posicao_Inicial_Jogador);
     IniciarTiros();

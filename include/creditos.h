@@ -6,4 +6,5 @@
 void Atualizar_Creditos(Estados_Jogo *estado);
 void Desenhar_Creditos(void);
 
+
 #endif
