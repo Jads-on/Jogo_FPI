@@ -3,32 +3,26 @@
 
 #include "raylib.h"
 
-typedef enum Tipo_Bala{ 
+typedef enum{ //controle dos tipos de municao
     Bala_Padrao = 0,
     Bala_Explosiva = 1,
     Bala_Perfurante = 2
 }Tipo_Bala;
 
-typedef struct Efeitos{ //efeitos recebidos pelos consumiveis
+
+typedef struct{ //efeitos recebidos pelos consumiveis
     //Energetico
     bool energetico_ativo;
     double energetico_duracao;
 }Efeitos;
 
-typedef struct Inventario{ //controle da quantidade de itens consumives que o jogador possui
-    int municao_explosiva,
-        municao_perfurante,
-        energeticos;
-    Efeitos efeitos;
-
-} Inventario;
-
-typedef struct Jogador{
+typedef struct{ //status do jogador
     int vida,
-        velocidade;
+        velocidade,
+        baterias;
     Vector2 posicao;
-    Inventario inventario;
     Tipo_Bala Tipo_Tiro;
+    Efeitos efeitos;
 
 }Jogador;
 

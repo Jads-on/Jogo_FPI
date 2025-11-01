@@ -11,50 +11,67 @@
 #define POSICAO_BARRA_X 90
 #define POSICAO_BARRA_Y 0
 #define ESPACO_ENTRE_BARRAS 50
-#define POSICAO_HUD_CENTRO_X 1750
-#define POSICAO_HUD_CENTRO_Y 775
+#define POSICAO_HUD_CENTRO_X 750
+#define POSICAO_HUD_CENTRO_Y 75
+#define CUSTO_ENERGETICO 5
+#define CUSTO_BALA_EXPLOSIVA 5
+#define CUSTO_BALA_PERFURANTE 3
 
 // Parametros das imagens usadas pelo jogador
-static Texture2D textura_barra_vida[6],
+static Texture2D sprite_barras,
+                 sprite_hud_habilidades;
+
+static Rectangle textura_barra_vida[6],
                  textura_barra_energetico[6],
-                 hud_habilidades[3];
+                 hud_tiro_perfurante[4],
+                 hud_tiro_explosivo[4],
+                 hud_energetico[4];
+
+int CalcularFrame(int baterias, int custo) {
+    if(baterias >= custo) {
+        return 3;  // Cheio - pode usar
+    }
+    else {
+        int frame = baterias * 3/ custo;
+        return (frame > 3) ? 3 : frame;  // Garante máximo de 3
+    }
+}
 
 //procedimentos e funcoes
 void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
     
     //inicia as variaveis pra evitar bugs com lixo de memoria
-    jogador->posicao.x = PosicaoInicial.x;
-    jogador->posicao.y = PosicaoInicial.y;
+    jogador->posicao = PosicaoInicial;
     jogador->velocidade = VELOCIDADE_JOGADOR;
     jogador->vida = VIDA_JOGADOR;
-    jogador->inventario.energeticos = 2;
-    jogador->inventario.efeitos.energetico_ativo = false;
-    jogador->inventario.efeitos.energetico_duracao = 0.0;
-    jogador->inventario.municao_explosiva = 2;
-    jogador->inventario.municao_perfurante = 2;   
+    jogador->baterias = 13;
+    jogador->efeitos.energetico_ativo = false;
+    jogador->efeitos.energetico_duracao = 0.0; 
     jogador->Tipo_Tiro = Bala_Padrao; 
 
     //carrega a textura das barras
-        //Barra de vida
-        textura_barra_vida[0] = LoadTexture("assets/sprites/barras/vida/0.png");
-        textura_barra_vida[1] = LoadTexture("assets/sprites/barras/vida/1.png");
-        textura_barra_vida[2] = LoadTexture("assets/sprites/barras/vida/2.png");
-        textura_barra_vida[3] = LoadTexture("assets/sprites/barras/vida/3.png");
-        textura_barra_vida[4] = LoadTexture("assets/sprites/barras/vida/4.png");
-        textura_barra_vida[5] = LoadTexture("assets/sprites/barras/vida/5.png");
+        sprite_barras = LoadTexture("assets/sprites/barras/Barras.png");
+        for(int frame = 0; frame < 6; frame++){
+            //Barra de vida
+            textura_barra_vida[frame] = (Rectangle){frame * 200, 0, 200, 200};
+                
+            //Barra de energetico
+            textura_barra_energetico[frame] =(Rectangle){frame * 200, 200, 200, 200};
+        }
 
-        //Barra de energetico
-        textura_barra_energetico[0] = LoadTexture("assets/sprites/barras/energetico/0.png");
-        textura_barra_energetico[1] = LoadTexture("assets/sprites/barras/energetico/1.png");
-        textura_barra_energetico[2] = LoadTexture("assets/sprites/barras/energetico/2.png");
-        textura_barra_energetico[3] = LoadTexture("assets/sprites/barras/energetico/3.png");
-        textura_barra_energetico[4] = LoadTexture("assets/sprites/barras/energetico/4.png");
-        textura_barra_energetico[5] = LoadTexture("assets/sprites/barras/energetico/5.png");
-    
     //carrega o hud de habilidades
-        hud_habilidades[0] = LoadTexture("assets/sprites/hud_de_habilidades/energetico.png");
-        hud_habilidades[1] = LoadTexture("assets/sprites/hud_de_habilidades/tiro_explosivo.png");
-        hud_habilidades[2] = LoadTexture("assets/sprites/hud_de_habilidades/tiro_reforcado.png");
+        sprite_hud_habilidades = LoadTexture("assets/sprites/hud_de_habilidades/hud.png");
+        for(int frame = 0; frame < 4; frame++){
+            //tiro perfurante
+            hud_tiro_perfurante[frame] = (Rectangle){frame * 200, 0, 200, 200};
+
+            //energetico
+            hud_energetico[frame] = (Rectangle){frame * 200, 200, 200, 200};
+
+            //tiro explosivo
+            hud_tiro_explosivo[frame] = (Rectangle){frame * 200, 400, 200, 200};
+        }
+       
 }
 
 void JogadorImagem(Jogador jogador){
@@ -83,27 +100,22 @@ void JogadorUpdate(Jogador *jogador){
 //mecanica do tiro do jogador
     if(IsKeyPressed(KEY_Q)){ //botao que ativa o tiro explosivo
 
-        if(jogador->inventario.municao_explosiva > 0){ //se o jogador tiver balas explosivas
-            jogador->Tipo_Tiro = Bala_Explosiva; //dispara o tiro explosivo
-            jogador->inventario.municao_explosiva -= 1; 
+        if(jogador->Tipo_Tiro != Bala_Explosiva){
+            if(jogador->baterias >= CUSTO_BALA_EXPLOSIVA){ //se o jogador tiver baterias suficiente para usar a bala explosiva
+                jogador->Tipo_Tiro = Bala_Explosiva; //dispara o tiro explosivo
+                jogador->baterias -= CUSTO_BALA_EXPLOSIVA;
+            }
         }
-        else{
-             jogador->Tipo_Tiro = Bala_Padrao; //se nao, usa balas normais
-        }
-
     }
 
     if(IsKeyPressed(KEY_R)){ //botao que ativa o tiro reforcado
-
-        if(jogador->inventario.municao_perfurante > 0){ //se o jogador tiver balas reforcadas
-            jogador->Tipo_Tiro = Bala_Perfurante; //dispara o tiro reforcado
-            jogador->inventario.municao_perfurante -= 1;
+        if(jogador->Tipo_Tiro != Bala_Explosiva){
+            if(jogador->baterias >= CUSTO_BALA_PERFURANTE){ //se o jogador tiver balas reforcadas
+                jogador->Tipo_Tiro = Bala_Perfurante; //dispara o tiro reforcado
+                jogador->baterias -= CUSTO_BALA_PERFURANTE;
+            }
         }
-        else{
-             jogador->Tipo_Tiro = Bala_Padrao; //se nao, usa balas normais
-        }
-
-    }
+    }   
     
     //detecta o momento que e solicitado o disparo
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){ 
@@ -128,9 +140,9 @@ void JogadorUpdate(Jogador *jogador){
 // mecanicas de power-up
     //energetico
     if(IsKeyPressed(KEY_E)){
-        if((jogador->inventario.energeticos > 0) && (jogador->inventario.efeitos.energetico_ativo == false)){
-            jogador->inventario.efeitos.energetico_ativo = true;
-            jogador->inventario.efeitos.energetico_duracao = GetTime() + DURACAO_ENERGETICO;
+        if((jogador->baterias >= CUSTO_ENERGETICO) && (jogador->efeitos.energetico_ativo == false)){
+            jogador->efeitos.energetico_ativo = true;
+            jogador->efeitos.energetico_duracao = GetTime() + DURACAO_ENERGETICO;
             
             // Aplica o efeito
             jogador->velocidade *= AUMENTO_DE_VELOCIDADE;
@@ -142,22 +154,19 @@ void JogadorUpdate(Jogador *jogador){
             else{
                 jogador->vida = 100;
             }
-
-            jogador->inventario.energeticos -= 1;
+            jogador->baterias -= CUSTO_ENERGETICO;
         }
     }
 
     //se o energetico esta ativo 
-    if(jogador->inventario.efeitos.energetico_ativo == true){
-        if(GetTime() >= jogador->inventario.efeitos.energetico_duracao){ //se a duracao do energetico acabou
+    if(jogador->efeitos.energetico_ativo == true){
+        if(GetTime() >= jogador->efeitos.energetico_duracao){ //se a duracao do energetico acabou
 
             jogador->velocidade /= AUMENTO_DE_VELOCIDADE; //reduz a velocidade
-            jogador->inventario.efeitos.energetico_duracao = 0.0;
-            jogador->inventario.efeitos.energetico_ativo = false;
-
+            jogador->efeitos.energetico_duracao = 0.0;
+            jogador->efeitos.energetico_ativo = false;
         }
     }
-
 }
 
 void JogadorVidaImagem(Jogador jogador){
@@ -172,19 +181,19 @@ void JogadorVidaImagem(Jogador jogador){
         nivel_barra_vida = 5;
     }
 
-    DrawTexture(textura_barra_vida[nivel_barra_vida], POSICAO_BARRA_X, POSICAO_BARRA_Y - ESPACO_ENTRE_BARRAS, WHITE);
+    DrawTextureRec(sprite_barras, textura_barra_vida[nivel_barra_vida], (Vector2) {POSICAO_BARRA_X, POSICAO_BARRA_Y - ESPACO_ENTRE_BARRAS}, WHITE);
 }
 
 void JogadorEnergeticoImagem(Jogador jogador){ //desenho e posicionamento da barra de energia
 
-    if(jogador.inventario.efeitos.energetico_ativo == false){ //caso o energetico nao esteja ativo, retorna sem fazer nada
+    if(jogador.efeitos.energetico_ativo == false){ //caso o energetico nao esteja ativo, retorna sem fazer nada
         return;
     }
 
     //caso o energetico seja ativado
     const double tempo_por_nivel = DURACAO_ENERGETICO / 5.0; //uso de const pois o tempo por nivel sempre sera o mesmo, sem alterar,uso de double pois GetTime retorna um double
 
-    double tempo_restante = jogador.inventario.efeitos.energetico_duracao - GetTime(); //uso de double pois GetTime retorna um double
+    double tempo_restante = jogador.efeitos.energetico_duracao - GetTime(); //uso de double pois GetTime retorna um double
 
     //caso o tempo restante saia do intervalo definido (evita bugs)
     if(tempo_restante <= 0.0){
@@ -201,31 +210,23 @@ void JogadorEnergeticoImagem(Jogador jogador){ //desenho e posicionamento da bar
         nivel_barra_energetico = 0;
     }
 
-    DrawTexture(textura_barra_energetico[nivel_barra_energetico], (POSICAO_BARRA_X), (POSICAO_BARRA_Y), WHITE);
+    DrawTextureRec(sprite_barras, textura_barra_energetico[nivel_barra_energetico], (Vector2) {POSICAO_BARRA_X, POSICAO_BARRA_Y}, WHITE);
 }
 
 void HudHabilidadesImagem(Jogador jogador){ //desenho e posicionamento do hud de habilidades
+    int frame_tiro_explosivo = CalcularFrame(jogador.baterias, CUSTO_BALA_EXPLOSIVA),
+        frame_tiro_perfurante = CalcularFrame(jogador.baterias, CUSTO_BALA_PERFURANTE),
+        frame_energetico = CalcularFrame(jogador.baterias, CUSTO_ENERGETICO);
 
-    if(jogador.inventario.energeticos > 0){
-        DrawTexture(hud_habilidades[0], POSICAO_HUD_CENTRO_X, POSICAO_HUD_CENTRO_Y, WHITE);
-    }
-    if(jogador.inventario.municao_explosiva > 0){
-        DrawTexture(hud_habilidades[1], (POSICAO_HUD_CENTRO_X - 115), (POSICAO_HUD_CENTRO_Y - 80), WHITE);
-    }
-    if(jogador.inventario.municao_perfurante > 0){
-        DrawTexture(hud_habilidades[2], (POSICAO_HUD_CENTRO_X - 80), (POSICAO_HUD_CENTRO_Y + 105), WHITE);
-    }
+    DrawTextureRec(sprite_hud_habilidades, hud_energetico[frame_energetico], (Vector2) {POSICAO_HUD_CENTRO_X - 115, POSICAO_HUD_CENTRO_Y + 100}, WHITE);
+ 
+    DrawTextureRec(sprite_hud_habilidades, hud_tiro_explosivo[frame_tiro_explosivo], (Vector2) {(POSICAO_HUD_CENTRO_X - 115), (POSICAO_HUD_CENTRO_Y - 80)}, WHITE);
+    
+    DrawTextureRec(sprite_hud_habilidades, hud_tiro_perfurante[frame_tiro_perfurante], (Vector2) {(POSICAO_HUD_CENTRO_X), (POSICAO_HUD_CENTRO_Y)}, WHITE);
+    
 }
 
 void DescarregarAssets(){
-    for(int i = 0; i < 6; i++){ //descarrega todas as imagens
-
-        if(i < 3){ //descarrega o hud de habilidades
-            UnloadTexture(hud_habilidades[i]);
-        }
-
-        //descarrega as barras
-        UnloadTexture(textura_barra_vida[i]);
-        UnloadTexture(textura_barra_energetico[i]);
-    }
+    UnloadTexture(sprite_barras);
+    UnloadTexture(sprite_hud_habilidades);
 }

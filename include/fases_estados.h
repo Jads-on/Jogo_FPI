@@ -2,7 +2,7 @@
 #define FASES_ESTADOS_H
 
 //estados da maquina de estados que controla as fases e o menu
-typedef enum Estados_Jogo{
+typedef enum{
     ESTADO_MENU = 0,
     ESTADO_FASE_1 = 1,
     ESTADO_FASE_2 = 2,

@@ -4,7 +4,7 @@
 #include "raylib.h"
 #include "jogador.h"
 
-typedef struct Bala {
+typedef struct{
 
     //parametros para os tiros
     Vector2 posicao;
