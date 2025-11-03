@@ -9,7 +9,6 @@ typedef enum{ //controle dos tipos de municao
     Bala_Perfurante = 2
 }Tipo_Bala;
 
-
 typedef struct{ //efeitos recebidos pelos consumiveis
     //Energetico
     bool energetico_ativo;
@@ -20,6 +19,8 @@ typedef struct{ //status do jogador
     int vida,
         velocidade,
         baterias;
+    float direcao_x,
+          angulo_mira;
     Vector2 posicao;
     Tipo_Bala Tipo_Tiro;
     Efeitos efeitos;

@@ -17,7 +17,10 @@
 #define CUSTO_BALA_EXPLOSIVA 5
 #define CUSTO_BALA_PERFURANTE 3
 
-// Parametros das imagens usadas pelo jogador
+#define LARGURA_FRAME_JOGADOR 400
+#define ALTURA_FRAME_JOGADOR 400
+
+// Parametros das imagens usadas no hud 
 static Texture2D sprite_barras,
                  sprite_hud_habilidades;
 
@@ -26,6 +29,20 @@ static Rectangle textura_barra_vida[6],
                  hud_tiro_perfurante[4],
                  hud_tiro_explosivo[4],
                  hud_energetico[4];
+
+//spritesheet e animacoes do jogador
+static Texture2D sprite_jogador;
+static Rectangle jogador_parado[2],
+                 jogador_atirando,             //frame do membro inferior
+                 jogador_andando[2],
+                 jogador_pulando,
+                 jogador_arma[3],              //frames dos membros superiores
+                 jogador_disparo[3],
+                 jogador_energetico_parado,
+                 jogador_energetico_andando[3],
+                 jogador_energetico_pulando,
+                 jogador_energetico_arma[3],
+                 jogador_morto[2];
 
 int CalcularFrame(int baterias, int custo) {
     if(baterias >= custo) {
@@ -71,6 +88,67 @@ void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
             //tiro explosivo
             hud_tiro_explosivo[frame] = (Rectangle){frame * 200, 400, 200, 200};
         }
+    
+    //carregar e preencher os sprites do jogador
+        sprite_jogador = LoadTexture("assets/sprites/jogador/jogador_spritesheet.png");
+
+        //frames do jogador normal
+            //frames parado
+            for(int frame_parado = 0; frame_parado < 2; frame_parado++){
+                jogador_parado[frame_parado] = (Rectangle){frame_parado * LARGURA_FRAME_JOGADOR, 0 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+            }
+
+            //frame atirando (torso)
+            jogador_atirando = (Rectangle){2 * LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR, 0 * LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+
+            //frame andando
+            for(int frame_andando = 3; frame_andando < 5; frame_andando++){
+                jogador_andando[frame_andando] = (Rectangle){frame_andando * LARGURA_FRAME_JOGADOR, 0 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+            }
+
+            //frame pulando
+            jogador_pulando = (Rectangle){5 * LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR, 0 * LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+
+            //frame do corpo superior
+            for(int frame_arma = 0; frame_arma > 3; frame_arma++){
+                
+                if((frame_arma + 5) == 5){
+                    jogador_arma[frame_arma] = (Rectangle){frame_arma * LARGURA_FRAME_JOGADOR, 1 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+                }
+                else{
+                    jogador_arma[4 - frame_arma] = (Rectangle){frame_arma * LARGURA_FRAME_JOGADOR, 2 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+                }
+            }
+
+             //frame do brilho do tiro 
+            for(int frame_disparo = 0; frame_disparo > 3; frame_disparo++){
+
+                if((frame_disparo + 5) == 5){ //desloca o frame em 5 frames pra casar com o spritesheet
+                    jogador_disparo[frame_disparo] = (Rectangle){frame_disparo * LARGURA_FRAME_JOGADOR, 2 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+                }
+                else{
+                    jogador_disparo[frame_disparo] = (Rectangle){frame_disparo * LARGURA_FRAME_JOGADOR, 3 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+                }
+            }
+
+        //frames do jogador no modo energetico
+            jogador_energetico_parado = (Rectangle){6 * LARGURA_FRAME_JOGADOR, 1 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+            
+            //frame andando
+            for(int frame_andando = 1; frame_andando < 4; frame_andando++){
+                jogador_energetico_andando[frame_andando] = (Rectangle){frame_andando * LARGURA_FRAME_JOGADOR, 1 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+            }
+
+            //frame pulando
+            jogador_energetico_pulando = (Rectangle){4 * LARGURA_FRAME_JOGADOR, 1 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+
+            for(int frame_arma = 2; frame_arma < 5; frame_arma++){
+                jogador_energetico_arma[frame_arma] = (Rectangle){frame_arma * LARGURA_FRAME_JOGADOR, 2 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+            }
+
+            for(int frame_morto = 2; frame_morto < 4; frame_morto++){
+                jogador_morto[frame_morto] = (Rectangle){frame_morto * LARGURA_FRAME_JOGADOR, 3 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
+            }
        
 }
 
