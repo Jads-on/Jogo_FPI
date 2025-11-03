@@ -16,10 +16,10 @@ int main(void){
 
     //parametros 
         //tela (tela cheia de 24")
-        //const int largura_tela = 1920;
-        //const int altura_tela = 1080;
-        const int largura_tela = 1200;
-        const int altura_tela = 600;
+        const int largura_tela = 1920;
+        const int altura_tela = 1080;
+        //const int largura_tela = 1200;
+        //const int altura_tela = 600;
 
         //pre configuracoes do jogador
         Jogador jogador;
