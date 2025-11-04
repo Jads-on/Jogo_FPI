@@ -3,22 +3,28 @@
 #include "tiros.h"
 #include <stdio.h>
 
+//parametros do jogador
 #define VELOCIDADE_JOGADOR 500
 #define VIDA_JOGADOR 100
 #define DURACAO_ENERGETICO 5.0  //duracao do efeito do energetico
 #define AUMENTO_DE_VELOCIDADE 2.0 //escolha o multiplo de aumento de velocidade (2.0x, 3.0x, etc)
 #define RECUPERACAO_ENERGETICO 20 //recupera um pouco da vida apos tomar
+#define CUSTO_ENERGETICO 5
+#define CUSTO_BALA_EXPLOSIVA 5
+#define CUSTO_BALA_PERFURANTE 3
+
+//organizacao do hud
 #define POSICAO_BARRA_X 90
 #define POSICAO_BARRA_Y 0
 #define ESPACO_ENTRE_BARRAS 50
 #define POSICAO_HUD_CENTRO_X 1750
 #define POSICAO_HUD_CENTRO_Y 745
-#define CUSTO_ENERGETICO 5
-#define CUSTO_BALA_EXPLOSIVA 5
-#define CUSTO_BALA_PERFURANTE 3
-
 #define LARGURA_FRAME_JOGADOR 400
 #define ALTURA_FRAME_JOGADOR 400
+
+//ajuste do disparo
+#define DESLOCAMENTO_TIRO_X 40
+#define DESLOCAMENTO_TIRO_Y -15
 
 // Parametros das imagens usadas no hud 
 static Texture2D sprite_barras,
@@ -119,8 +125,21 @@ void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
 }
 
 void JogadorImagem(Jogador jogador){
-//aqui ficara as sprites do protagonista
-    DrawRectangle(jogador.posicao.x, jogador.posicao.y, 200, 200, RED);
+    Vector2 alvo = {0.0f, 0.0f},
+            direcao = {0.0f, 0.0f};
+    float angulo_rotacao = 0.0;
+    alvo.x = GetMouseX(),
+    alvo.y = GetMouseY();
+
+    direcao = Vector2Subtract(alvo, jogador.posicao);
+
+    angulo_rotacao = atan2f(direcao.y, direcao.x) * RAD2DEG; 
+
+    Rectangle destRec = {jogador.posicao.x + 95, jogador.posicao.y + 100, 400, 400};
+
+    //desenho do jogador
+    DrawTextureRec(sprite_jogador_corpo, jogador_parado[0], (Vector2) {jogador.posicao.x, jogador.posicao.y}, WHITE);
+    DrawTexturePro(sprite_jogador_torso, jogador_arma[0], destRec, (Vector2) {100, 100}, angulo_rotacao, WHITE);
 }
 
 void JogadorUpdate(Jogador *jogador){
@@ -164,20 +183,31 @@ void JogadorUpdate(Jogador *jogador){
     //detecta o momento que e solicitado o disparo
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){ 
         //inicializa o parametros usados no disparo
-        float angulo_rotacao_tiro = 0.0;
+        float angulo_rotacao_tiro = 0.0,
+              theta = 0.0;
         Vector2 alvo = {0.0f, 0.0f},
-                direcao_tiro = {0.0f, 0.0f};
+                direcao_tiro = {0.0f, 0.0f},
+                posicao_arma = {jogador->posicao.x, jogador->posicao.y}, //move os tiros para sair do cano da arma
+                deslocamento_disparo = {DESLOCAMENTO_TIRO_X, DESLOCAMENTO_TIRO_Y},
+                disparo_rotacionado = {0.0f, 0.0f},
+                posicao_tiro = {0.0f, 0.0f};
 
         //localiza as coordnadas do mouse
-        alvo.x = GetMouseX(),
+        alvo.x = GetMouseX();
         alvo.y = GetMouseY();
         
         //calcula qual a direcao e qual o angulo o disparo deve seguir 
-        direcao_tiro = Vector2Subtract(alvo, jogador->posicao);
+        direcao_tiro = Vector2Subtract(alvo, posicao_arma);
         angulo_rotacao_tiro = atan2f(direcao_tiro.y, direcao_tiro.x) * RAD2DEG; // Calcula a rotação da bala (converte O atan2f para graus com RAD2DEG)
+        
+        theta = angulo_rotacao_tiro * DEG2RAD; //sera usado para rotacionar o spawn do tiro
+
+        disparo_rotacionado = Vector2Rotate(deslocamento_disparo, theta);
+
+        posicao_tiro = Vector2Add(jogador->posicao, disparo_rotacionado);
 
         //executa o disparo e retorna a usar a bala padrao
-        Tiro_Jogador(jogador->posicao, direcao_tiro, angulo_rotacao_tiro, jogador->Tipo_Tiro);
+        Tiro_Jogador(posicao_tiro, direcao_tiro, angulo_rotacao_tiro, jogador->Tipo_Tiro);
         jogador->Tipo_Tiro = Bala_Padrao; //evita o uso de mais de uma bala especial sem ativar o botao
     }
 

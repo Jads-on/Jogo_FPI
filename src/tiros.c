@@ -19,9 +19,9 @@ void IniciarTiros(){ //evita lixo de memoria e bugs
         balas[i].dano = 0;
         balas[i].ativo = false;
         balas[i].tipo = 0;
-        balas[i].raio_bala = 5.0;
+     
         balas[i].explodir = false;
-        balas[i].tempo_explosao = 0.0;
+        balas[i].tempo_explosao = 0.5;
     }
 
 }
@@ -82,6 +82,9 @@ void AtualizarTiros(){
         if(balas[idx].ativo){
             balas[idx].posicao.x += balas[idx].direcao.x * balas[idx].velocidade * variacao_tempo;
             balas[idx].posicao.y += balas[idx].direcao.y * balas[idx].velocidade * variacao_tempo;
+            if(balas[idx].tempo_explosao > 0){
+                balas[idx].tempo_explosao--;
+            }
 
             // Desativa a bala se sair da tela
             if(balas[idx].posicao.x > GetScreenWidth() || balas[idx].posicao.x < 0 || balas[idx].posicao.y > GetScreenHeight() || balas[idx].posicao.y < 0){
@@ -98,19 +101,30 @@ void Tiro_Imagem_Jogador(){
     for (int i = 0; i < MAX_BALAS; i++){
 
         if (balas[i].ativo){
+            Vector2 tam_retangulo = {15, 10},
+                    origem_rotacao = {tam_retangulo.x/2 , tam_retangulo.y/2};
+
+            Rectangle retangulo_bala = {balas[i].posicao.x, balas[i].posicao.y, tam_retangulo.x, tam_retangulo.y};
 
             switch (balas[i].tipo){
                 case Bala_Padrao:
-                    DrawCircleV(balas[i].posicao, 5, BLUE);
+                    DrawRectanglePro(retangulo_bala,origem_rotacao, balas[i].angulo, BLUE);
                     break;
                 
                 case Bala_Perfurante:
-                    DrawCircleV(balas[i].posicao, 5, GREEN);
+                    DrawRectanglePro(retangulo_bala,origem_rotacao, balas[i].angulo, GREEN);
                     break;
                     
                 case Bala_Explosiva:
-                    DrawCircleV(balas[i].posicao, 5, ORANGE);
+                    DrawRectanglePro(retangulo_bala,origem_rotacao, balas[i].angulo, ORANGE);
 
+                    if(balas[i].tempo_explosao <= 0){
+                        balas[i].explodir = true;
+                    }
+
+                    if(balas[i].explodir){
+                        DrawCircleV(balas[i].posicao, 100, RED);
+                    }
                     break;
                 
                 default:
