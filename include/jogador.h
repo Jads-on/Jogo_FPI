@@ -15,12 +15,16 @@ typedef struct{ //efeitos recebidos pelos consumiveis
     double energetico_duracao;
 }Efeitos;
 
-typedef struct{ //status do jogador
+typedef struct{ 
+    //status do jogador
     int vida,
         velocidade,
         baterias;
-    float direcao_x,
-          angulo_mira;
+    //animacao 
+    int frame_atual_corpo;
+    float angulo_mira,
+          timer_animacao;
+    bool andando;
     Vector2 posicao;
     Tipo_Bala Tipo_Tiro;
     Efeitos efeitos;
