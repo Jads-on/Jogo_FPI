@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 //parametros do jogador
+#define DISTANCIA_ROTACAO 100 //reduz a area do centro de rotacao 
 #define VELOCIDADE_JOGADOR 500
 #define VIDA_JOGADOR 100
 #define ALTURA_PULO -4000.0
@@ -57,7 +58,19 @@ static Rectangle jogador_parado[2],
                  jogador_energetico_arma[3],
                  jogador_morto[2];
 
-int CalcularFrame(int baterias, int custo) {
+static inline Vector2 Centro_Torso(Vector2 posicao_jogador){ //funcao que calcula onde unir o corpo e o tor
+    return(Vector2){posicao_jogador.x + 95, posicao_jogador.y + 100};
+}
+
+static inline Rectangle Inverter_Imagem(Rectangle frame, bool flip){ //funcao que inverte os frames(economia de sprites)
+    if(flip){
+        frame.width = -frame.width;
+        frame.x -= LARGURA_FRAME_JOGADOR / 2;
+    }
+    return frame;
+}
+
+int CalcularFrame(int baterias, int custo) { //gerencia o consumo de baterias
     if(baterias >= custo) {
             return 3;  // Cheio - pode usar
     }
@@ -74,7 +87,7 @@ void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
         jogador->posicao = PosicaoInicial;
         jogador->velocidade = VELOCIDADE_JOGADOR;
         jogador->vida = VIDA_JOGADOR;
-        jogador->baterias = 13;
+        jogador->baterias = 500;
         jogador->Tipo_Tiro = Bala_Padrao; 
         jogador->efeitos.energetico_duracao = 0.0; 
         jogador->deslocamento_vertical = 0.0;
@@ -139,43 +152,82 @@ void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
         }
 
 void JogadorImagem(Jogador jogador){
-    Vector2 alvo = {alvo.x = GetMouseX(), alvo.y = GetMouseY()},
-            direcao = {0.0f, 0.0f},
-            centro_torso = {jogador.posicao.x + 95,jogador.posicao.y + 100},
-            centro_rotacao = {100, 100};
-    Rectangle frame_corpo_andando,
-                  frame_torso; 
-    float angulo_rotacao = 0.0;
-        
-    direcao = Vector2Subtract(alvo, centro_torso);
-    angulo_rotacao = atan2f(direcao.y, direcao.x) * RAD2DEG; 
-    Rectangle destRec = {centro_torso.x, centro_torso.y, 400, 400};
-     
+
+    //calculo da rotacao do torso
+        Vector2 alvo = {alvo.x = GetMouseX(), alvo.y = GetMouseY()},
+                direcao = {0.0f, 0.0f},
+                centro_torso = Centro_Torso(jogador.posicao),
+                centro_rotacao = {100, 100};
+        float angulo_rotacao = 0.0,
+              distacia_mouse_corpo = Vector2Length(Vector2Subtract(alvo, centro_torso));
+        if (distacia_mouse_corpo >= DISTANCIA_ROTACAO){
+            direcao = Vector2Subtract(alvo, centro_torso);
+            angulo_rotacao = atan2f(direcao.y, direcao.x) * RAD2DEG; 
+        }
+        Rectangle destRec = {centro_torso.x, centro_torso.y, 400, 400};
+
     //desenho do corpo
-        if(jogador.animacoes.andando){
-            frame_corpo_andando = jogador_andando[jogador.animacoes.frame_atual_corpo];
-                    
-            if(jogador.animacoes.direcao < 0){ //vira frames para a esquerda (economia de sprites)
-                frame_corpo_andando.width *= -1;
-                frame_corpo_andando.x -= LARGURA_FRAME_JOGADOR/2;
+        //caso esteja no chao
+            Rectangle frame_corpo;
+            if(jogador.animacoes.tem_chao){ //so fica parado se tiver chao
+
+                //andando
+                if(jogador.animacoes.andando){
+
+                    if(jogador.efeitos.energetico_ativo){
+                        frame_corpo = jogador_energetico_andando[jogador.animacoes.frame_atual_corpo];
+                    }
+                    else{
+                        frame_corpo = jogador_andando[jogador.animacoes.frame_atual_corpo]; 
+                    }   
+
+                }
+                
+                //parado
+                else{
+
+                    if(jogador.efeitos.energetico_ativo){
+                        frame_corpo = jogador_energetico_parado;
+                    }
+                    else{
+                        frame_corpo = jogador_parado[jogador.animacoes.frame_atual_corpo];
+                    }
+
+                }
             }
-            DrawTextureRec(sprite_jogador_corpo, frame_corpo_andando, jogador.posicao, WHITE);
+
+        //pulando
+            else{ //desenho pulo
+               
+                if(jogador.efeitos.energetico_ativo){
+                    frame_corpo= jogador_energetico_pulando;
+                }
+                else{
+                    frame_corpo = jogador_pulando;
+                }
+            }
+            frame_corpo = Inverter_Imagem(frame_corpo, jogador.animacoes.direcao < 0); //se precisar inverte
+            DrawTextureRec(sprite_jogador_corpo, frame_corpo,jogador.posicao, WHITE);
         
+    //desenho do torso
+        Rectangle frame_torso; 
+        
+        if(jogador.Tipo_Tiro == Bala_Perfurante){
+            frame_torso = jogador.efeitos.energetico_ativo? jogador_energetico_arma[1] : jogador_arma[1];
+        }
+        else if(jogador.Tipo_Tiro == Bala_Explosiva){
+            frame_torso = jogador.efeitos.energetico_ativo? jogador_energetico_arma[2] : jogador_arma[2];
         }
         else{
-            DrawTextureRec(sprite_jogador_corpo, jogador_parado[jogador.animacoes.frame_atual_corpo],jogador.posicao, WHITE);
+            frame_torso = jogador.efeitos.energetico_ativo? jogador_energetico_arma[0] : jogador_arma[0];
+        }
+           
+        if(alvo.x < (jogador.posicao.x)){
+            frame_torso.height *= -1;
+            centro_rotacao.y += 200;
         }
 
-    //desenho do torso
-    if(alvo.x < (jogador.posicao.x)){
-        frame_torso = jogador_arma[0]; 
-        frame_torso.height *= -1;
-        centro_rotacao.y += 200;
-    }
-    else{
-        frame_torso = jogador_arma[0];
-    }
-        DrawTexturePro(sprite_jogador_torso, frame_torso, destRec, centro_rotacao, angulo_rotacao, WHITE); 
+            DrawTexturePro(sprite_jogador_torso, frame_torso, destRec, centro_rotacao, angulo_rotacao, WHITE); 
 }
 
 void JogadorUpdate(Jogador *jogador){      
@@ -235,12 +287,11 @@ void JogadorUpdate(Jogador *jogador){
                         deslocamento_disparo = {DESLOCAMENTO_TIRO_X, DESLOCAMENTO_TIRO_Y},
                         disparo_rotacionado = {0.0f, 0.0f},
                         posicao_tiro = {0.0f, 0.0f},
-                        centro_torso = {jogador->posicao.x + 95, jogador->posicao.y + 100};
+                        centro_torso = Centro_Torso(jogador->posicao);
                 
             //calcula qual a direcao e qual o angulo o disparo deve seguir 
             if(alvo.x < (jogador->posicao.x)){
-                centro_torso.x = jogador->posicao.x + 100;
-                centro_torso.y = jogador->posicao.y + 205;
+                deslocamento_disparo.y *= -1;
             }
             
             direcao_tiro = Vector2Subtract(alvo, centro_torso);  
