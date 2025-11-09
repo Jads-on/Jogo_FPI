@@ -32,15 +32,27 @@ typedef struct{
     //status do jogador
     int vida,
         velocidade,
-        baterias;
+        baterias,
+        total_baterias;
     //fisica
     float deslocamento_vertical;
     Vector2 posicao;
+    Rectangle hitbox;
     Animacoes animacoes;
     Tipo_Bala Tipo_Tiro;
     Efeitos efeitos;
 
 }Jogador;
+
+typedef struct{
+    int valor;
+    bool ativo;
+    Vector2 posicao;
+    Rectangle hitbox;
+
+}Bateria;
+
+// Funcoes do jogador
 
 void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial);
 
@@ -54,5 +66,14 @@ void JogadorEnergeticoImagem(Jogador jogador);
 
 void HudHabilidadesImagem(Jogador jogador);
 
+bool CheckCollisionJogador(Rectangle hitbox, Rectangle elemento);
+
 void DescarregarAssets();
+
+// Funcoes da coleta de baterias/moedas
+
+void SpawnarBaterias(Vector2 posicao, int valor);
+
+void DesenharBaterias();
+
 #endif

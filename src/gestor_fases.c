@@ -1,11 +1,11 @@
 #include "jogador.h"
 #include "fases_estados.h"
 #include "gestor_fases.h"
-#include "fase_1.h"
 #include "menu.h"
+#include "fase_1.h"
+#include "gameover.h"
 #include "creditos.h"
 #include "historia.h"
-
 
 void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
 
@@ -22,9 +22,9 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
     case ESTADO_FASE_2:
         //Atualizar_Fase_2(estado, jogador);
         break;
-
+    
     case ESTADO_GAMEOVER:
-        //Atualizar_GameOver(estado);
+        Atualizar_GameOver(estado,jogador);
         break;
         
     case ESTADO_HISTORIA:
@@ -33,6 +33,10 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
 
     case ESTADO_CREDITOS:
         Atualizar_Creditos(estado);
+        break;
+    
+    case ESTADO_SAIR:
+        DescarregarAssets();
         break;
 
     default:
@@ -56,7 +60,7 @@ void Desenhar_Jogo(Estados_Jogo estado, Jogador jogador){
         break;
 
     case ESTADO_GAMEOVER:
-        //DesenharGameOver(estado);
+        Desenhar_GameOver(&jogador);
         break;
     
     case ESTADO_HISTORIA:

@@ -7,4 +7,5 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador);
 
 void Desenhar_Jogo(Estados_Jogo estado, Jogador jogador);
 
+
 #endif 

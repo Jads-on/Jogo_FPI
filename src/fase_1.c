@@ -4,7 +4,7 @@
 #include "gestor_fases.h"
 
 void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
-        //atualiza o jogador
+    // Atualiza o jogador
         JogadorUpdate(jogador);
         AtualizarTiros();
 
@@ -15,13 +15,18 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
 
 void DesenharFase1(Jogador jogador){
 
-    //desenho do Jogador
-    JogadorImagem(jogador);
+    // Desenho do Jogador
+        JogadorImagem(jogador);
 
-    //barras de vida e habilidades
-    JogadorEnergeticoImagem(jogador);
-    JogadorVidaImagem(jogador);
-    Tiro_Imagem_Jogador();
-    HudHabilidadesImagem(jogador);
-
+    //Assets
+        // Baterias Dropadas
+            DesenharBaterias();
+    
+        // Barras e Hud
+            JogadorEnergeticoImagem(jogador);
+            JogadorVidaImagem(jogador);
+            HudHabilidadesImagem(jogador);
+        
+        //Tiros
+            Tiro_Imagem_Jogador();
 }
