@@ -4,8 +4,8 @@
 
 void Atualizar_Creditos(Estados_Jogo *estado) {
     // Volta ao menu
-    if (IsKeyPressed(KEY_M) || IsKeyPressed(KEY_ENTER)) {
-        *estado = ESTADO_MENU;
+    if (IsKeyPressed(KEY_ENTER)) {
+        *estado = estado_anterior;
     }
 }
 
@@ -32,5 +32,5 @@ void Desenhar_Creditos(void) {
     DrawText("- Alexandre Cabral Mota <acm>", 120, y, 36, GRAY);
     y += 100;
 
-    DrawText("Pressione ENTER ou M para voltar ao menu", 100, y, 26, (Color){180, 180, 210, 255});
+    DrawText("Pressione ENTER para voltar ao menu", 100, y, 26, (Color){180, 180, 210, 255});
 }

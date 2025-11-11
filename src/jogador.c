@@ -168,7 +168,7 @@ void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
         }
 
 void JogadorImagem(Jogador jogador){
-    TraceLog(LOG_INFO, TextFormat("Energetico Ativo: %d", jogador.efeitos.energetico_ativo));
+
     //calculo da rotacao do torso
         Vector2 alvo = {alvo.x = GetMouseX(), alvo.y = GetMouseY()},
                 direcao = {0.0f, 0.0f},

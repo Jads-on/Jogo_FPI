@@ -8,6 +8,8 @@
 #include "historia.h"
 #include "gestor_audio.h"
 
+Estados_Jogo estado_anterior;
+
 void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
 
     Estados_Jogo estado_anterior = *estado;
@@ -38,6 +40,11 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
         Atualizar_Creditos(estado);
         break;
     
+    case ESTADO_VOLUME:
+        AtualizarMusica();
+        Controlar_Volume_Musica(estado);
+        break;
+    
     case ESTADO_SAIR:
         DescarregarAssets();
         break;
@@ -46,7 +53,7 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
         break;
     }
 
-    if (*estado != estado_anterior) { // <-- ESSENCIAL!
+    if (*estado != estado_anterior) { 
         Transicao_musica(*estado);
     }
 }
@@ -74,6 +81,10 @@ void Desenhar_Jogo(Estados_Jogo estado, Jogador jogador){
         Desenhar_Historia();
         break;
     
+     case ESTADO_VOLUME:
+        Desenha_Barra_Volume_Musica();
+        break;
+    
     case ESTADO_CREDITOS:
         Desenhar_Creditos();
         break;
@@ -88,18 +99,23 @@ void Transicao_musica(Estados_Jogo estado){
         case ESTADO_MENU:
             TocarMusica(MUSICA_MENU);
             break;
+
         case ESTADO_FASE_1:
             TocarMusica(MUSICA_FASE_1);
             break;
+
         case ESTADO_FASE_2:
             TocarMusica(MUSICA_FASE_2);
             break;
+
         case ESTADO_GAMEOVER:
             TocarMusica(MUSICA_GAMEOVER);
             break;
+
         case ESTADO_CREDITOS:
             TocarMusica(MUSICA_ENCERRAMENTO);
             break;
+
         default:
             break;
     }

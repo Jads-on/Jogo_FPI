@@ -3,8 +3,8 @@
 #include "fases_estados.h"
 
 void Atualizar_Historia(Estados_Jogo *estado) {
-    if (IsKeyPressed(KEY_M) || IsKeyPressed(KEY_ENTER)) {
-        *estado = ESTADO_MENU;
+    if (IsKeyPressed(KEY_ENTER)) {
+        *estado = estado_anterior;
     }
 }
 
@@ -30,5 +30,5 @@ void Desenhar_Historia(void) {
     DrawText("Agora, metade humano, metade maquina,", x, y, fontSize, corTexto); y += 45;
     DrawText("voce busca vinganca e respostas.", x, y, fontSize, corTexto);
 
-    DrawText("Pressione ENTER ou M para voltar ao menu", 100, GetScreenHeight() - 60, 24, (Color){180, 180, 210, 255});
+    DrawText("Pressione ENTER voltar ao menu", 100, GetScreenHeight() - 60, 24, (Color){180, 180, 210, 255});
 }

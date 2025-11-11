@@ -28,6 +28,7 @@ int main(void){
 
         //inicializacao da maquina de estados
         static Estados_Jogo estado_atual = ESTADO_MENU;
+       
 
     //inicializacao da janela e pre set do fps
     InitWindow(largura_tela, altura_tela, "SYNTHETIC");

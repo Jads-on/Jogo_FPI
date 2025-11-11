@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "tiros.h"
 #include "raymath.h"
 #define MAX_BALAS 30

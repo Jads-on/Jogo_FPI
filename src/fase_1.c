@@ -3,6 +3,8 @@
 #include "fases_estados.h"
 #include "gestor_fases.h"
 
+extern Estados_Jogo estado_anterior; // extern para ser usado em outras fontes    
+
 void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
     // Atualiza o jogador
         JogadorUpdate(jogador);
@@ -10,6 +12,11 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
 
         if(jogador->vida <= 0){
             *estado = ESTADO_GAMEOVER;
+        }
+
+        if(IsKeyPressed(KEY_V)){  
+            estado_anterior = ESTADO_FASE_1; //salva o estado anterior
+            *estado = ESTADO_VOLUME;
         }
 }
 
