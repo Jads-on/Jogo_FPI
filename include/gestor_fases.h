@@ -7,5 +7,7 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador);
 
 void Desenhar_Jogo(Estados_Jogo estado, Jogador jogador);
 
+void Transicao_musica(Estados_Jogo estado);
+
 
 #endif 

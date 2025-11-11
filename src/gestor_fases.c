@@ -6,8 +6,11 @@
 #include "gameover.h"
 #include "creditos.h"
 #include "historia.h"
+#include "gestor_audio.h"
 
 void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
+
+    Estados_Jogo estado_anterior = *estado;
 
     switch (*estado){ //essas funcoes devem serd eclaradas nas bibliotecas de cada fase
 
@@ -42,6 +45,10 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
     default:
         break;
     }
+
+    if (*estado != estado_anterior) { // <-- ESSENCIAL!
+        Transicao_musica(*estado);
+    }
 }
 
 void Desenhar_Jogo(Estados_Jogo estado, Jogador jogador){
@@ -73,5 +80,27 @@ void Desenhar_Jogo(Estados_Jogo estado, Jogador jogador){
         
     default:
         break;
+    }
+}
+
+void Transicao_musica(Estados_Jogo estado){
+    switch(estado) {
+        case ESTADO_MENU:
+            TocarMusica(MUSICA_MENU);
+            break;
+        case ESTADO_FASE_1:
+            TocarMusica(MUSICA_FASE_1);
+            break;
+        case ESTADO_FASE_2:
+            TocarMusica(MUSICA_FASE_2);
+            break;
+        case ESTADO_GAMEOVER:
+            TocarMusica(MUSICA_GAMEOVER);
+            break;
+        case ESTADO_CREDITOS:
+            TocarMusica(MUSICA_ENCERRAMENTO);
+            break;
+        default:
+            break;
     }
 }

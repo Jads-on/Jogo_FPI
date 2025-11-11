@@ -467,9 +467,9 @@ void HudHabilidadesImagem(Jogador jogador){ //desenho e posicionamento do hud de
             
     DrawTextureRec(sprite_hud_habilidades, hud_tiro_perfurante[frame_tiro_perfurante], (Vector2) {(POSICAO_HUD_CENTRO_X), (POSICAO_HUD_CENTRO_Y)}, WHITE);
       
-    DrawTextureRec(sprite_jogador_corpo, frame_bateria, (Vector2) {(POSICAO_BARRA_X * 10), (POSICAO_BARRA_Y)}, WHITE);
-    DrawText(TextFormat("%d", jogador.baterias), (POSICAO_BARRA_X * 10) + 207, POSICAO_BARRA_Y + 234, 24, BLACK);
-    DrawText(TextFormat("%d", jogador.baterias), (POSICAO_BARRA_X * 10) + 205, POSICAO_BARRA_Y + 232, 24, DARKBLUE);
+    DrawTextureRec(sprite_jogador_corpo, frame_bateria, (Vector2) {(POSICAO_BARRA_X * 18.5), (POSICAO_BARRA_Y - 150)}, WHITE);
+    DrawText(TextFormat("%d", jogador.baterias), (POSICAO_BARRA_X * 18.5) + 207, POSICAO_BARRA_Y + 84, 24, BLACK);
+    DrawText(TextFormat("%d", jogador.baterias), (POSICAO_BARRA_X * 18.5) + 205, POSICAO_BARRA_Y + 82, 24, DARKBLUE);
 }
 
 void DesenharBaterias() {
