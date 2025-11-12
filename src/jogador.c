@@ -1,6 +1,7 @@
 #include "jogador.h"
 #include "raymath.h"
 #include "tiros.h"
+#include "gestor_audio.h"
 
 //parametros do jogador
 #define DISTANCIA_ROTACAO 110 //reduz a area do centro de rotacao 
@@ -290,6 +291,7 @@ void JogadorUpdate(Jogador *jogador){
                     jogador->baterias += baterias_dropadas[i].valor;
                     jogador->total_baterias += baterias_dropadas[i].valor;
                     baterias_dropadas[i].ativo = false;
+                    TocarSom(SOM_COLETA_BATERIA);
                 }
             }
         }
@@ -301,6 +303,7 @@ void JogadorUpdate(Jogador *jogador){
                         jogador->Tipo_Tiro = Bala_Explosiva; //dispara o tiro explosivo
                         jogador->baterias -= CUSTO_BALA_EXPLOSIVA;
                 }
+                TocarSom(SOM_TROCA_MUNICAO);
             }
         }
 
@@ -310,6 +313,7 @@ void JogadorUpdate(Jogador *jogador){
                         jogador->Tipo_Tiro = Bala_Perfurante; //dispara o tiro reforcado
                         jogador->baterias -= CUSTO_BALA_PERFURANTE;
                 }
+                TocarSom(SOM_TROCA_MUNICAO);
             }
         }   
             
@@ -341,6 +345,8 @@ void JogadorUpdate(Jogador *jogador){
             //executa o disparo e retorna a usar a bala padrao
                 Tiro_Jogador(posicao_tiro, direcao_tiro, angulo_rotacao_tiro, jogador->Tipo_Tiro);
                 jogador->Tipo_Tiro = Bala_Padrao; //evita o uso de mais de uma bala especial sem ativar o botao
+            
+            TocarSom(SOM_TIRO);
         }
     
     // mecanicas de power-up
@@ -362,6 +368,7 @@ void JogadorUpdate(Jogador *jogador){
                     }
                     jogador->baterias -= CUSTO_ENERGETICO;
                 }
+                TocarSom(SOM_EFEITO_ENERGETICO);
             }
 
         //se o energetico esta ativo 

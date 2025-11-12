@@ -3,6 +3,7 @@
 #include "menu.h"
 #include "fases_estados.h"
 #include "jogador.h"   // se o protótipo usa Jogador*
+#include "gestor_audio.h"
 
 // ---------- estado interno do menu ----------
 static const char *itens[] = {"Jogar", "História", "Volume", "Créditos", "Sair"};
@@ -31,11 +32,15 @@ void Encerrar_Menu(void) {
 void Atualizar_Menu(Estados_Jogo *estado, Jogador *jogador) {
     (void)jogador; // não usado por enquanto
 
-    if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))
+    if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)){
         opcao = (opcao + TOTAL_OPCOES - 1) % TOTAL_OPCOES;
+        TocarSom(SOM_SELECIONAR);
+    }
 
-    if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S))
+    if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S)){
         opcao = (opcao + 1) % TOTAL_OPCOES;
+        TocarSom(SOM_SELECIONAR);
+    }
 
     if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
         estado_anterior = ESTADO_MENU; //salva o estado anterior
@@ -46,6 +51,7 @@ void Atualizar_Menu(Estados_Jogo *estado, Jogador *jogador) {
             case 3: *estado = ESTADO_CREDITOS; break; // Créditos
             case 4: *estado = ESTADO_SAIR;     break; // Sair
         }
+        TocarSom(SOM_MENU_SELECT);
     }
 }
 

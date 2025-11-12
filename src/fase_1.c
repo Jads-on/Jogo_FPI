@@ -2,6 +2,7 @@
 #include "tiros.h"
 #include "fases_estados.h"
 #include "gestor_fases.h"
+#include "gestor_audio.h"
 
 extern Estados_Jogo estado_anterior; // extern para ser usado em outras fontes    
 
@@ -11,12 +12,14 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
         AtualizarTiros();
 
         if(jogador->vida <= 0){
+            TocarSom(SOM_MORTE_JOGADOR);
             *estado = ESTADO_GAMEOVER;
         }
 
         if(IsKeyPressed(KEY_V)){  
             estado_anterior = ESTADO_FASE_1; //salva o estado anterior
             *estado = ESTADO_VOLUME;
+            TocarSom(SOM_MENU_SELECT);
         }
 }
 

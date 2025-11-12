@@ -175,11 +175,13 @@ void Controlar_Volume_Musica(Estados_Jogo *estado) {
         if (barra_selecionada == BARRA_MUSICA) {
             barra_selecionada = BARRA_SONS;
         }
+        TocarSom(SOM_SELECIONAR);
     }
     if (IsKeyPressed(KEY_UP)) {
         if (barra_selecionada == BARRA_SONS) {
             barra_selecionada = BARRA_MUSICA;
         }
+        TocarSom(SOM_SELECIONAR);
     }
 
     
@@ -189,6 +191,7 @@ void Controlar_Volume_Musica(Estados_Jogo *estado) {
         } else { // BARRA_SONS
             Aumentar_Volume_Sons();
         }
+        TocarSom(SOM_SELECIONAR);
     }
     
     
@@ -198,6 +201,7 @@ void Controlar_Volume_Musica(Estados_Jogo *estado) {
         } else { // BARRA_SONS
             Diminuir_Volume_Sons();
         }
+        TocarSom(SOM_SELECIONAR);
     }
 
     
@@ -207,6 +211,7 @@ void Controlar_Volume_Musica(Estados_Jogo *estado) {
         } else { // BARRA_SONS
             Mutar_Sons();
         }
+        TocarSom(SOM_SELECIONAR);
     }
 
     
