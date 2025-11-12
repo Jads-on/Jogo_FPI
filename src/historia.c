@@ -2,6 +2,8 @@
 #include "historia.h"
 #include "fases_estados.h"
 
+extern Estados_Jogo estado_anterior; // extern para ser usado em outras fontes  
+
 void Atualizar_Historia(Estados_Jogo *estado) {
     if (IsKeyPressed(KEY_ENTER)) {
         *estado = estado_anterior;

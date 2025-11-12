@@ -2,6 +2,8 @@
 #include "creditos.h"
 #include "fases_estados.h"
 
+extern Estados_Jogo estado_anterior;
+
 void Atualizar_Creditos(Estados_Jogo *estado) {
     // Volta ao menu
     if (IsKeyPressed(KEY_ENTER)) {

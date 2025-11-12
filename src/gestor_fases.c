@@ -8,7 +8,7 @@
 #include "historia.h"
 #include "gestor_audio.h"
 
-Estados_Jogo estado_anterior;
+Estados_Jogo estado_anterior; 
 
 void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
 
