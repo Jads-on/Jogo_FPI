@@ -1,5 +1,7 @@
 #include "tiros.h"
 #include "raymath.h"
+
+
 #define MAX_BALAS 30
 #define VELOCIDADE_TIRO 750
 #define Dano_Bala_Padrao 10
@@ -7,12 +9,14 @@
 #define Dano_Bala_Explosiva 5
 
 static Bala balas[MAX_BALAS];
+static Bateria baterias;
 
 void IniciarTiros(){ //evita lixo de memoria e bugs 
 
     for(int i = 0; i < MAX_BALAS; i++){
         balas[i].posicao = (Vector2){0, 0};
         balas[i].direcao = (Vector2){0, 0};
+        balas[i].hitbox = (Rectangle){balas[i].posicao.x, balas[i].posicao.y, 500, 500};
         balas[i].angulo = 0;
         balas[i].velocidade = 0;
         balas[i].dano = 0;
@@ -85,6 +89,15 @@ void AtualizarTiros(){
                 balas[idx].tempo_explosao--;
             }
 
+            //atualiza a posicao da hitbox da bala
+            balas[idx].hitbox.x = balas[idx].posicao.x;
+            balas[idx].hitbox.y = balas[idx].posicao.y;
+            if(CheckCollisionRecs(balas[idx].hitbox, baterias.hitbox)){
+                if(balas[idx].tempo_explosao <= 0){
+                    balas[idx].explodir = true;
+                }
+            }
+
             // Desativa a bala se sair da tela
             if(balas[idx].posicao.x > GetScreenWidth() || balas[idx].posicao.x < 0 || balas[idx].posicao.y > GetScreenHeight() || balas[idx].posicao.y < 0){
                 balas[idx].ativo = false;
@@ -117,17 +130,14 @@ void Tiro_Imagem_Jogador(){
                 case Bala_Explosiva:
                     DrawRectanglePro(retangulo_bala,origem_rotacao, balas[i].angulo, ORANGE);
 
-                    if(balas[i].tempo_explosao <= 0){
-                        balas[i].explodir = true;
-                    }
-
+                    //desenha a explosao da bala
                     if(balas[i].explodir){
                         DrawCircleV(balas[i].posicao, 100, RED);
                     }
                     break;
                 
                 default:
-                    DrawCircleV(balas[i].posicao, 5, BLUE);
+                    DrawCircle(balas[i].hitbox.x, balas[i].hitbox.y, 5, BLUE);
                     break;
             }
 

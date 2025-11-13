@@ -261,6 +261,7 @@ void JogadorUpdate(Jogador *jogador){
     //no eixo y (pulo)
         if(IsKeyPressed(KEY_SPACE) && jogador->animacoes.tem_chao){
             jogador->deslocamento_vertical = ALTURA_PULO;
+            TocarSom(SOM_PULO); 
         }
 
         jogador->deslocamento_vertical += GRAVIDADE * variacao_tempo; //necessario ser em struct para salvar os valores de deslocamento e deixar o pulo suave
@@ -302,8 +303,8 @@ void JogadorUpdate(Jogador *jogador){
                 if(jogador->baterias >= CUSTO_BALA_EXPLOSIVA){ //se o jogador tiver baterias suficiente para usar a bala explosiva
                         jogador->Tipo_Tiro = Bala_Explosiva; //dispara o tiro explosivo
                         jogador->baterias -= CUSTO_BALA_EXPLOSIVA;
+                        TocarSom(SOM_TROCA_MUNICAO);
                 }
-                TocarSom(SOM_TROCA_MUNICAO);
             }
         }
 
@@ -312,8 +313,8 @@ void JogadorUpdate(Jogador *jogador){
                 if(jogador->baterias >= CUSTO_BALA_PERFURANTE){ //se o jogador tiver balas reforcadas
                         jogador->Tipo_Tiro = Bala_Perfurante; //dispara o tiro reforcado
                         jogador->baterias -= CUSTO_BALA_PERFURANTE;
+                        TocarSom(SOM_TROCA_MUNICAO);
                 }
-                TocarSom(SOM_TROCA_MUNICAO);
             }
         }   
             
@@ -367,8 +368,8 @@ void JogadorUpdate(Jogador *jogador){
                         jogador->vida = 100;
                     }
                     jogador->baterias -= CUSTO_ENERGETICO;
+                    TocarSom(SOM_EFEITO_ENERGETICO);
                 }
-                TocarSom(SOM_EFEITO_ENERGETICO);
             }
 
         //se o energetico esta ativo 

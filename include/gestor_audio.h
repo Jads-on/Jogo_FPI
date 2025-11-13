@@ -38,6 +38,7 @@ typedef enum{
     SOM_INIMIGO_3,
     SOM_MENU_SELECT,
     SOM_MORTE_JOGADOR,
+    SOM_PULO,
     SOM_SELECIONAR,  
     SOM_TIRO,
     SOM_TROCA_MUNICAO,
