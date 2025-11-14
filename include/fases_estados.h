@@ -9,9 +9,9 @@ typedef enum{
     ESTADO_GAMEOVER = 3,
     ESTADO_SAIR = 4,
     ESTADO_CREDITOS = 5,
-    ESTADO_HISTORIA = 6
+    ESTADO_VOLUME = 6,
+    ESTADO_HISTORIA = 7
     
 }Estados_Jogo;
-
 
 #endif

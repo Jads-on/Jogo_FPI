@@ -11,6 +11,7 @@
 #include "menu.h"
 #include "historia.h"
 #include "creditos.h"
+#include "gestor_audio.h"
 
 int main(void){
 
@@ -18,8 +19,8 @@ int main(void){
         //tela (tela cheia de 24")
         const int largura_tela = 1920;
         const int altura_tela = 1080;
-        //const int largura_tela = 1200;
-        //const int altura_tela = 600;
+        //const int largura_tela = 1366;
+        //const int altura_tela = 768;
 
         //pre configuracoes do jogador
         Jogador jogador;
@@ -27,6 +28,7 @@ int main(void){
 
         //inicializacao da maquina de estados
         static Estados_Jogo estado_atual = ESTADO_MENU;
+       
 
     //inicializacao da janela e pre set do fps
     InitWindow(largura_tela, altura_tela, "SYNTHETIC");
@@ -36,11 +38,13 @@ int main(void){
     //inicializacao
     IniciarJogador(&jogador, Posicao_Inicial_Jogador);
     IniciarTiros();
+    Iniciar_Gestor_Audio();
 
     //looping do jogo
     while (estado_atual != ESTADO_SAIR) {
 
     if (WindowShouldClose()) estado_atual = ESTADO_SAIR;
+    AtualizarMusica();
 
     // Atualização (controla teclas e estados)
     switch (estado_atual) {
@@ -72,6 +76,7 @@ int main(void){
     //encerramento
     Encerrar_Menu();
     DescarregarAssets();
+    Encerrar_Gestor_Audio();
     CloseWindow();
     return 0;
 }

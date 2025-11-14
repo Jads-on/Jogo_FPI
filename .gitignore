@@ -1,3 +1,5 @@
 *.o
 *.exe
-meu_jogo
+SYNTHETIC
+jogo
+jogo_backup

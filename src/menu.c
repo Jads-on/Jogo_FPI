@@ -3,6 +3,7 @@
 #include "menu.h"
 #include "fases_estados.h"
 #include "jogador.h"   // se o protótipo usa Jogador*
+#include "gestor_audio.h"
 
 // ---------- estado interno do menu ----------
 static const char *itens[] = {"Jogar", "História", "Volume", "Créditos", "Sair"};
@@ -11,6 +12,8 @@ static int opcao = 0;
 
 static Texture2D fundo;
 static bool carregado = false;
+
+extern Estados_Jogo estado_anterior; // extern para ser usado em outras fontes    
 
 // ---------- ciclo de vida ----------
 void Iniciar_Menu(void) {
@@ -29,20 +32,26 @@ void Encerrar_Menu(void) {
 void Atualizar_Menu(Estados_Jogo *estado, Jogador *jogador) {
     (void)jogador; // não usado por enquanto
 
-    if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W))
+    if (IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_W)){
         opcao = (opcao + TOTAL_OPCOES - 1) % TOTAL_OPCOES;
+        TocarSom(SOM_SELECIONAR);
+    }
 
-    if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S))
+    if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S)){
         opcao = (opcao + 1) % TOTAL_OPCOES;
+        TocarSom(SOM_SELECIONAR);
+    }
 
     if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
+        estado_anterior = ESTADO_MENU; //salva o estado anterior
         switch (opcao) {
             case 0: *estado = ESTADO_FASE_1;   break; // Jogar
             case 1: *estado = ESTADO_HISTORIA; break; // História
-            case 2: /* futuro: abrir tela de Volume */ break;
+            case 2: *estado = ESTADO_VOLUME;   break; //Volume
             case 3: *estado = ESTADO_CREDITOS; break; // Créditos
             case 4: *estado = ESTADO_SAIR;     break; // Sair
         }
+        TocarSom(SOM_MENU_SELECT);
     }
 }
 
@@ -81,5 +90,5 @@ void Desenhar_Menu(void) {
         DrawText(txt, x, y, fs, (i == opcao) ? YELLOW : RAYWHITE);
     }
 
-    DrawText("Use W/S (ou setas) e ENTER", 40, GetScreenHeight() - 60, 24, GRAY);
+    DrawText("Use W/S (ou setas) e ENTER", 40, GetScreenHeight() - 100, 24, GRAY);
 }

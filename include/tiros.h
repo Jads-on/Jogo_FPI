@@ -16,6 +16,7 @@ typedef struct{
     Tipo_Bala tipo;
 
     //parametros para as colisoes
+    Rectangle hitbox;
     float raio_bala;
     bool explodir;
     double tempo_explosao;
