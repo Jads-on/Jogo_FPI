@@ -4,6 +4,8 @@
 #include "raylib.h"
 #include "jogador.h"
 
+#define MAX_BALAS 30
+
 typedef struct{
 
     //parametros para os tiros
@@ -22,6 +24,8 @@ typedef struct{
     double tempo_explosao;
 } Bala;
 
+extern Bala balas[MAX_BALAS];
+
 void IniciarTiros();
 
 void Tiro_Jogador(Vector2 Posicao_Jogador, Vector2 direcao_tiro, float angulo_rotacao_tiro, int Tipo_Tiro);
@@ -29,5 +33,7 @@ void Tiro_Jogador(Vector2 Posicao_Jogador, Vector2 direcao_tiro, float angulo_ro
 void AtualizarTiros();
 
 void Tiro_Imagem_Jogador();
+
+void DesarregarExplosao();
 
 #endif

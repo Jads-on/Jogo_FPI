@@ -1,8 +1,6 @@
+#include "raylib.h"
 #include "jogador.h"
 #include "fases_estados.h"
 #include "gestor_fases.h"
-#include <stdio.h>
+#include"baterias.h"
 
-void SpawnDrone(){
-    printf("SpawnarDrone");
-}

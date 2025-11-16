@@ -11,8 +11,7 @@
 Estados_Jogo estado_anterior; 
 
 void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
-
-    Estados_Jogo estado_anterior = *estado;
+    AtualizarMusica();
 
     switch (*estado){ //essas funcoes devem serd eclaradas nas bibliotecas de cada fase
 
@@ -51,10 +50,6 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
 
     default:
         break;
-    }
-
-    if (*estado != estado_anterior) { 
-        Transicao_musica(*estado);
     }
 }
 

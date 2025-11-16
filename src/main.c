@@ -12,6 +12,7 @@
 #include "historia.h"
 #include "creditos.h"
 #include "gestor_audio.h"
+#include "baterias.h"
 
 int main(void){
 
@@ -27,34 +28,47 @@ int main(void){
         Vector2 Posicao_Inicial_Jogador = (Vector2){largura_tela/2, altura_tela/2};
 
         //inicializacao da maquina de estados
-        static Estados_Jogo estado_atual = ESTADO_MENU;
+        static Estados_Jogo estado_atual = ESTADO_MENU,
+                            estado_anterior = ESTADO_MENU;
        
 
     //inicializacao da janela e pre set do fps
     InitWindow(largura_tela, altura_tela, "SYNTHETIC");
     SetTargetFPS(60);
     Iniciar_Menu();
-
+   
     //inicializacao
     IniciarJogador(&jogador, Posicao_Inicial_Jogador);
     IniciarTiros();
+    IniciarBaterias();
     Iniciar_Gestor_Audio();
-
+    Transicao_musica(estado_atual); //inicia a musica quando no ocorreu transicao ainda
+    
     //looping do jogo
     while (estado_atual != ESTADO_SAIR) {
-
+   
     if (WindowShouldClose()) estado_atual = ESTADO_SAIR;
+
+    //sempre atualiza a musica
     AtualizarMusica();
 
-    // Atualização (controla teclas e estados)
+    // Atualização (controla teclas e estados) - basicamente controla o jogo
     switch (estado_atual) {
+         
         case ESTADO_MENU:
             Atualizar_Menu(&estado_atual, &jogador);
             break;
         default:
-            Atualizar_Jogo(&estado_atual, &jogador);
+    
+            Atualizar_Jogo(&estado_atual, &jogador); //o jogo todo ocorre aqui
             break;
     }
+
+    //detecta transicao de estados para mudar a musica
+     if (estado_atual != estado_anterior) {
+            Transicao_musica(estado_atual);
+            estado_anterior = estado_atual;  
+        }
 
     // Desenho (tudo dentro de um único Begin/End)
     BeginDrawing();
@@ -76,6 +90,7 @@ int main(void){
     //encerramento
     Encerrar_Menu();
     DescarregarAssets();
+    DescarregarBateria();
     Encerrar_Gestor_Audio();
     CloseWindow();
     return 0;

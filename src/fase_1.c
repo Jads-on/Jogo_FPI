@@ -1,5 +1,6 @@
 #include "jogador.h"
 #include "tiros.h"
+#include "colisoes.h"
 #include "fases_estados.h"
 #include "gestor_fases.h"
 #include "gestor_audio.h"
@@ -10,6 +11,7 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
     // Atualiza o jogador
         JogadorUpdate(jogador);
         AtualizarTiros();
+        ColisaoBalaBateria();
 
         if(jogador->vida <= 0){
             TocarSom(SOM_MORTE_JOGADOR);

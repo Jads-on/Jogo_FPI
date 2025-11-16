@@ -4,6 +4,9 @@
         "jogador.h": "c",
         "raymath.h": "c",
         "fases_estados.h": "c",
-        "menu.h": "c"
+        "menu.h": "c",
+        "tiros.h": "c",
+        "gestor_audio.h": "c",
+        "baterias.h": "c"
     }
 }

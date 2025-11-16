@@ -2,6 +2,8 @@
 #include "raymath.h"
 #include "tiros.h"
 #include "gestor_audio.h"
+#include "spawn.h"
+#include "baterias.h"
 
 //parametros do jogador
 #define DISTANCIA_ROTACAO 110 //reduz a area do centro de rotacao 
@@ -23,8 +25,7 @@
 #define POSICAO_HUD_CENTRO_Y 745
 #define LARGURA_FRAME_JOGADOR 400
 #define ALTURA_FRAME_JOGADOR 400
-#define MAX_BATERIAS 50 //qtd de entidades maximas dropadas
-#define TAM_BATERIA 50
+
 
 //ajuste do spwan disparo
 #define DESLOCAMENTO_TIRO_X 150
@@ -35,7 +36,6 @@
 #define ALTURA_CHAO 200.0
 
 // Parametros das imagens usadas no hud 
-static Bateria baterias_dropadas[MAX_BATERIAS];
 static Texture2D sprite_barras,
         sprite_hud_habilidades;
 
@@ -43,8 +43,8 @@ static Rectangle textura_barra_vida[6],
                  textura_barra_energetico[6],
                  hud_tiro_perfurante[4],
                  hud_tiro_explosivo[4],
-                 hud_energetico[4],
-                 frame_bateria;
+                 hud_energetico[4];
+               
 
 //spritesheet e animacoes do jogador
 static Texture2D sprite_jogador_torso;          
@@ -55,13 +55,14 @@ static Rectangle jogador_parado[2],
                  jogador_andando[2],
                  jogador_pulando,
                  jogador_arma[3],              //frames dos membros superiores
-                 jogador_flash_disparo[3],
                  jogador_energetico_parado,
                  jogador_energetico_andando[3],
                  jogador_energetico_pulando,
                  jogador_energetico_arma[3];
 
 Rectangle jogador_morto[2]; //usarei em gameover por isso n esta static
+
+
 
 static inline Vector2 Centro_Torso(Vector2 posicao_jogador){ //funcao que calcula onde unir o corpo e o tor
     return(Vector2){posicao_jogador.x + 95, posicao_jogador.y + 100};
@@ -155,16 +156,6 @@ void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
                 //efeitos
                 jogador_arma[frame] = (Rectangle) {frame * LARGURA_FRAME_JOGADOR, 0 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
                 jogador_energetico_arma[frame] = (Rectangle) {frame * LARGURA_FRAME_JOGADOR, 1 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
-                jogador_flash_disparo[frame] = (Rectangle) {frame * LARGURA_FRAME_JOGADOR, 2 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
-            }
-
-            //baterias
-            frame_bateria = (Rectangle) { 3 * LARGURA_FRAME_JOGADOR, 2 * ALTURA_FRAME_JOGADOR, LARGURA_FRAME_JOGADOR, ALTURA_FRAME_JOGADOR};
-            for(int bateria = 0;bateria < MAX_BATERIAS; bateria++){
-                baterias_dropadas[bateria].ativo = false;
-                baterias_dropadas[bateria].valor = 0;
-                baterias_dropadas[bateria].posicao = (Vector2){0, 0};
-                baterias_dropadas[bateria].hitbox = (Rectangle){0, 0, 0, 0};
             }
         }
 
@@ -282,21 +273,11 @@ void JogadorUpdate(Jogador *jogador){
             jogador->hitbox.y = jogador->posicao.y + 17;
     
         // Debug da hitbox do protagonista -> DrawRectangle(jogador->hitbox.x, jogador->hitbox.y, jogador->hitbox.width, jogador->hitbox.height, BLACK);
-
-    //checagem da coleta de bateria
-        for(int i = 0; i < MAX_BATERIAS; i++) {
-            if(baterias_dropadas[i].ativo) {
-                if(CheckCollisionRecs(jogador->hitbox, baterias_dropadas[i].hitbox)) {
-                    
-                    // Coleta da bateria
-                    jogador->baterias += baterias_dropadas[i].valor;
-                    jogador->total_baterias += baterias_dropadas[i].valor;
-                    baterias_dropadas[i].ativo = false;
-                    TocarSom(SOM_COLETA_BATERIA);
-                }
-            }
+        int valor_bateria = 1;
+        if(VerificarColisaoBateria(jogador->hitbox, &valor_bateria)){
+            jogador->baterias += 1;
+            jogador->total_baterias +=1;
         }
-
     // Mecanica do tiro do jogador
         if(IsKeyPressed(KEY_Q)){ //botao que ativa o tiro explosivo
             if(jogador->Tipo_Tiro != Bala_Explosiva){
@@ -402,25 +383,9 @@ void JogadorUpdate(Jogador *jogador){
 
             if(IsKeyPressed(KEY_U))
             jogador->vida -= 20;
-            if(IsKeyPressed(KEY_T)) {
-                SpawnarBaterias((Vector2){0, 0}, 1);
-            }
-}
-
-void SpawnarBaterias(Vector2 posicao, int valor){
-    for(int idx_bateria = 0; idx_bateria < MAX_BATERIAS; idx_bateria++){
-        if(!baterias_dropadas[idx_bateria].ativo){
-            baterias_dropadas[idx_bateria].posicao = posicao;
-            baterias_dropadas[idx_bateria].valor = valor;
-            baterias_dropadas[idx_bateria].ativo = true;
-            baterias_dropadas[idx_bateria].hitbox = (Rectangle){
-            posicao.x + 174,  
-            posicao.y + 180,  
-            TAM_BATERIA, 
-            TAM_BATERIA};
-        }
-        return;
-    }
+            if(IsKeyPressed(KEY_T))
+            SpawnarBaterias(jogador->posicao, 1);
+            
 }
 
 void JogadorVidaImagem(Jogador jogador){ 
@@ -474,21 +439,7 @@ void HudHabilidadesImagem(Jogador jogador){ //desenho e posicionamento do hud de
     DrawTextureRec(sprite_hud_habilidades, hud_tiro_explosivo[frame_tiro_explosivo], (Vector2) {(POSICAO_HUD_CENTRO_X - 115), (POSICAO_HUD_CENTRO_Y - 80)}, WHITE);
             
     DrawTextureRec(sprite_hud_habilidades, hud_tiro_perfurante[frame_tiro_perfurante], (Vector2) {(POSICAO_HUD_CENTRO_X), (POSICAO_HUD_CENTRO_Y)}, WHITE);
-      
-    DrawTextureRec(sprite_jogador_corpo, frame_bateria, (Vector2) {(POSICAO_BARRA_X * 18.5), (POSICAO_BARRA_Y - 150)}, WHITE);
-    DrawText(TextFormat("%d", jogador.baterias), (POSICAO_BARRA_X * 18.5) + 207, POSICAO_BARRA_Y + 84, 24, BLACK);
-    DrawText(TextFormat("%d", jogador.baterias), (POSICAO_BARRA_X * 18.5) + 205, POSICAO_BARRA_Y + 82, 24, DARKBLUE);
 }
-
-void DesenharBaterias() {
-    for(int i = 0; i < MAX_BATERIAS; i++) {
-        if(baterias_dropadas[i].ativo) {
-            // Desenha a bateria
-            //Debug de hitbox das baterias -> DrawRectangle(baterias_dropadas[i].hitbox.x, baterias_dropadas[i].hitbox.y, baterias_dropadas[i].hitbox.width, baterias_dropadas[i].hitbox.height, BLACK);
-            DrawTextureRec(sprite_jogador_corpo, frame_bateria, baterias_dropadas[i].posicao, WHITE);
-        } 
-    }
-}   
 
 void DescarregarAssets(){
     UnloadTexture(sprite_barras);

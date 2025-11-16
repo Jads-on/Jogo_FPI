@@ -1,5 +1,5 @@
-#include "gestor_audio.h"
 #include "stdio.h"
+#include "gestor_audio.h"
 
 static bool audio_iniciado = false;
 static Gestor_Audio gestor_de_audio = {0};
@@ -12,15 +12,20 @@ void CarregarSom(int indice, const char* caminho){ //otimiza o carregamento dos 
     gestor_de_audio.sons_carregados[indice] = true;
 }
 
+void CarregarMusica(int indice, const char* caminho){ //otimiza o carregamento dos sons
+    gestor_de_audio.musicas[indice] = LoadMusicStream(caminho);
+    gestor_de_audio.musicas_carregadas[indice] = true;
+}
+
 void Iniciar_Gestor_Audio(){
     if(!audio_iniciado){ //apenas inicia caso o audio n esteja iniciado
 
         //Preenche as variaveis
             InitAudioDevice();
             //musica
-                gestor_de_audio.volume_musica = 0.5f; //Inicia o volume em 40%
+                gestor_de_audio.volume_musica = 0.4f; //Inicia o volume em 40%
                 gestor_de_audio.mutado_musica = false;
-                gestor_de_audio.volume_anterior_musica = 0.5f;
+                gestor_de_audio.volume_anterior_musica = 0.4f;
                 gestor_de_audio.musica_atual = MUSICA_MENU;
                 gestor_de_audio.musica_tocando = false;
             
@@ -30,28 +35,29 @@ void Iniciar_Gestor_Audio(){
                 gestor_de_audio.volume_anterior_sons = 0.5f;
 
         //Carrega as musicas
-            //encerramento
-            gestor_de_audio.musicas[MUSICA_ENCERRAMENTO] = LoadMusicStream("assets/musicas/encerramento.mp3");
-            gestor_de_audio.musicas_carregadas[MUSICA_ENCERRAMENTO] = true;
+            CarregarMusica(MUSICA_MENU, "assets/musicas/(Menu)Punch_Deck-Music_To_Wear_Fingerless_Gloves_To.mp3");
+             CarregarMusica(MUSICA_FASE_1, "assets/musicas/(Fase_1)Carpenter_Brut-Turbo_Killer.mp3");
+              CarregarMusica(MUSICA_ENCERRAMENTO, "assets/musicas/encerramento.mp3");
+         
         
 
         //Carrega Sons
-         CarregarSom(SOM_COLETA_BATERIA, "assets/sons/coleta_bateria.mp3");
-          CarregarSom(SOM_DANO_BOSS, "assets/sons/dano_boss.mp3");
-           CarregarSom(SOM_DANO_JOGADOR, "assets/sons/dano.mp3");
-            CarregarSom(SOM_EFEITO_ENERGETICO, "assets/sons/efeito_energetico.mp3");
-             CarregarSom(SOM_EXPLOSAO, "assets/sons/explosao.mp3");
-              CarregarSom(SOM_FINAL_BOSS, "assets/sons/final_boss.mp3"); 
-               CarregarSom(SOM_INIMIGO_1, "assets/sons/inimigo1.mp3");
-                CarregarSom(SOM_INIMIGO_2, "assets/sons/inimigo2.mp3");
-                 CarregarSom(SOM_INIMIGO_3, "assets/sons/inimigo3.mp3");
-                  CarregarSom(SOM_MENU_SELECT, "assets/sons/menu_select.mp3");
-                   CarregarSom(SOM_MORTE_JOGADOR, "assets/sons/morte_player.mp3");
-                    CarregarSom(SOM_SELECIONAR, "assets/sons/selecionar.mp3");
-                     CarregarSom(SOM_TIRO, "assets/sons/tiro.mp3");
-                      CarregarSom(SOM_TROCA_MUNICAO, "assets/sons/troca_municao.mp3");
-                       CarregarSom(SOM_VIDA_BAIXA, "assets/sons/vida_baixa.mp3");
-                        CarregarSom(SOM_PULO, "assets/sons/pulo.mp3");
+            CarregarSom(SOM_COLETA_BATERIA, "assets/sons/coleta_bateria.mp3");
+             CarregarSom(SOM_DANO_BOSS, "assets/sons/dano_boss.mp3");
+              CarregarSom(SOM_DANO_JOGADOR, "assets/sons/dano.mp3");
+               CarregarSom(SOM_EFEITO_ENERGETICO, "assets/sons/efeito_energetico.mp3");
+                CarregarSom(SOM_EXPLOSAO, "assets/sons/explosao.mp3");
+                 CarregarSom(SOM_FINAL_BOSS, "assets/sons/final_boss.mp3"); 
+                  CarregarSom(SOM_INIMIGO_1, "assets/sons/inimigo1.mp3");
+                   CarregarSom(SOM_INIMIGO_2, "assets/sons/inimigo2.mp3");
+                    CarregarSom(SOM_INIMIGO_3, "assets/sons/inimigo3.mp3");
+                     CarregarSom(SOM_MENU_SELECT, "assets/sons/menu_select.mp3");
+                      CarregarSom(SOM_MORTE_JOGADOR, "assets/sons/morte_player.mp3");
+                       CarregarSom(SOM_SELECIONAR, "assets/sons/selecionar.mp3");
+                        CarregarSom(SOM_TIRO, "assets/sons/tiro.mp3");
+                         CarregarSom(SOM_TROCA_MUNICAO, "assets/sons/troca_municao.mp3");
+                          CarregarSom(SOM_VIDA_BAIXA, "assets/sons/vida_baixa.mp3");
+                           CarregarSom(SOM_PULO, "assets/sons/pulo.mp3");
                     
         audio_iniciado = true;
     }

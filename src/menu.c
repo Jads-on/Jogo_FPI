@@ -20,6 +20,7 @@ void Iniciar_Menu(void) {
     if (carregado) return;
     fundo = LoadTexture("assets/sprites/menu/menu_1920x1080.png"); // <-- seu caminho
     carregado = true;
+    
 }
 
 void Encerrar_Menu(void) {

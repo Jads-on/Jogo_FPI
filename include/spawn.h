@@ -1,6 +1,9 @@
 #ifndef SPAWN_H_
 #define SPAWN_H_
 
-void SpawnDrone();
+#include "raylib.h"
+#include "raymath.h"
+
+
 
 #endif

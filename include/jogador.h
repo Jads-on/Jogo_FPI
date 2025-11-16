@@ -2,6 +2,7 @@
 #define JOGADOR_H_
 
 #include "raylib.h"
+#include "baterias.h"
 
 typedef enum{ //controle dos tipos de municao
     Bala_Padrao = 0,
@@ -44,14 +45,6 @@ typedef struct{
 
 }Jogador;
 
-typedef struct{
-    int valor;
-    bool ativo;
-    Vector2 posicao;
-    Rectangle hitbox;
-
-}Bateria;
-
 // Funcoes do jogador
 
 void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial);
@@ -69,11 +62,5 @@ void HudHabilidadesImagem(Jogador jogador);
 bool CheckCollisionJogador(Rectangle hitbox, Rectangle elemento);
 
 void DescarregarAssets();
-
-// Funcoes da coleta de baterias/moedas
-
-void SpawnarBaterias(Vector2 posicao, int valor);
-
-void DesenharBaterias();
 
 #endif

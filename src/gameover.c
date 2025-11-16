@@ -1,7 +1,7 @@
-#include "gameover.h"
-#include "jogador.h"
 #include "raylib.h"
+#include "jogador.h"
 #include "tiros.h"
+#include "gameover.h"
 
 static const char *itens[] = {"Reiniciar", "Menu Principal", "Sair"};
 static const int TOTAL_OPCOES = 3;
