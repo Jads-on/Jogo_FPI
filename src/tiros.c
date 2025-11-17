@@ -7,8 +7,8 @@
 #define Dano_Bala_Perfurante 20
 #define Dano_Bala_Explosiva 5
 #define TEMPO_EXPLOSAO 0.2f
-#define LARGURA_FRAME_JOGADOR 400
-#define ALTURA_FRAME_JOGADOR 400
+#define LARGURA_FRAME_JOGADOR 200
+#define ALTURA_FRAME_JOGADOR 200
 #define FRAMES_EXPLOSAO 3
 
 static Texture2D explosao;
@@ -127,7 +127,7 @@ void Tiro_Imagem_Jogador(){
     for (int i = 0; i < MAX_BALAS; i++){
 
         if (balas[i].ativo){
-            Vector2 tam_retangulo = {15, 10},
+            Vector2 tam_retangulo = {10, 5},
                     origem_rotacao = {tam_retangulo.x/2 , tam_retangulo.y/2};
 
             Rectangle retangulo_bala = {balas[i].posicao.x, balas[i].posicao.y, tam_retangulo.x, tam_retangulo.y};

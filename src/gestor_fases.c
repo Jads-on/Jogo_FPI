@@ -18,6 +18,10 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
     case ESTADO_MENU:
         Atualizar_Menu(estado, jogador);
         break;
+
+    case ESTADO_INICIAR_FASE_1:
+        Iniciar_Fase_1(estado);
+        break;
     
     case ESTADO_FASE_1:
         Atualizar_Fase_1(estado, jogador);

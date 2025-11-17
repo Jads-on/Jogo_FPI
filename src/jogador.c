@@ -9,7 +9,7 @@
 #define DISTANCIA_ROTACAO 110 //reduz a area do centro de rotacao 
 #define VELOCIDADE_JOGADOR 500
 #define VIDA_JOGADOR 100
-#define ALTURA_PULO -4000.0
+#define ALTURA_PULO -2500.0
 #define DURACAO_ENERGETICO 5.0  //duracao do efeito do energetico
 #define AUMENTO_DE_VELOCIDADE 2.0 //escolha o multiplo de aumento de velocidade (2.0x, 3.0x, etc)
 #define RECUPERACAO_ENERGETICO 20 //recupera um pouco da vida apos tomar
@@ -18,22 +18,29 @@
 #define CUSTO_BALA_PERFURANTE 3
 
 //organizacao do hud
-#define POSICAO_BARRA_X 90
+#define POSICAO_BARRA_X 0
 #define POSICAO_BARRA_Y 0
 #define ESPACO_ENTRE_BARRAS 50
-#define POSICAO_HUD_CENTRO_X 1750
-#define POSICAO_HUD_CENTRO_Y 745
-#define LARGURA_FRAME_JOGADOR 400
-#define ALTURA_FRAME_JOGADOR 400
+#define POSICAO_HUD_CENTRO_X 1650
+#define POSICAO_HUD_CENTRO_Y 780
 
+//Frame shape
+#define LARGURA_FRAME_JOGADOR 200
+#define ALTURA_FRAME_JOGADOR 200
+
+#define LARGURA_FRAME_BARRAS 300
+#define ALTURA_FRAME_BARRAS 300
+
+#define LARGURA_FRAME_HUD 200
+#define ALTURA_FRAME_HUD 200
 
 //ajuste do spwan disparo
-#define DESLOCAMENTO_TIRO_X 150
-#define DESLOCAMENTO_TIRO_Y 43
+#define DESLOCAMENTO_TIRO_X 90
+#define DESLOCAMENTO_TIRO_Y -9
 
 //fisica
-#define GRAVIDADE 12500.0
-#define ALTURA_CHAO 200.0
+#define GRAVIDADE 7000.0
+#define ALTURA_CHAO 860.0
 
 // Parametros das imagens usadas no hud 
 static Texture2D sprite_barras,
@@ -65,7 +72,7 @@ Rectangle jogador_morto[2]; //usarei em gameover por isso n esta static
 
 
 static inline Vector2 Centro_Torso(Vector2 posicao_jogador){ //funcao que calcula onde unir o corpo e o tor
-    return(Vector2){posicao_jogador.x + 95, posicao_jogador.y + 100};
+    return(Vector2){posicao_jogador.x + 60, posicao_jogador.y + 70};
 }
 
 static inline Rectangle Inverter_Imagem(Rectangle frame, bool flip){ //funcao que inverte os frames(economia de sprites)
@@ -108,29 +115,29 @@ void IniciarJogador(Jogador *jogador, Vector2 PosicaoInicial){
         jogador->animacoes.timer_animacao = 0.0f;
         jogador->animacoes.frame_atual_corpo = 0;
         jogador->animacoes.direcao = 0;
-        jogador->hitbox = (Rectangle){jogador->posicao.x, jogador->posicao.y, 128, 318};
+        jogador->hitbox = (Rectangle){jogador->posicao.x, jogador->posicao.y, 70, 175};
 
     //carrega a textura das barras e inicia o vetor das baterias (pool object)
         sprite_barras = LoadTexture("assets/sprites/barras/Barras.png");
         for(int frame = 0; frame < 6; frame++){
             //Barra de vida
-                textura_barra_vida[frame] = (Rectangle){frame * 200, 0, 200, 200};
+                textura_barra_vida[frame] = (Rectangle){frame *  LARGURA_FRAME_BARRAS, 0 * ALTURA_FRAME_BARRAS,  LARGURA_FRAME_BARRAS, ALTURA_FRAME_BARRAS};
                         
             //Barra de energetico
-                textura_barra_energetico[frame] =(Rectangle){frame * 200, 200, 200, 200};
+                textura_barra_energetico[frame] =(Rectangle){frame *  LARGURA_FRAME_BARRAS, 1 * ALTURA_FRAME_BARRAS,  LARGURA_FRAME_BARRAS, ALTURA_FRAME_BARRAS};
         }
 
     //carrega o hud de habilidades
         sprite_hud_habilidades = LoadTexture("assets/sprites/hud_de_habilidades/hud.png");
         for(int frame = 0; frame < 4; frame++){
             //tiro perfurante
-                hud_tiro_perfurante[frame] = (Rectangle){frame * 200, 0, 200, 200};
+                hud_tiro_perfurante[frame] = (Rectangle){frame * LARGURA_FRAME_HUD, 0 * ALTURA_FRAME_HUD, 200, ALTURA_FRAME_HUD};
 
             //energetico
-                hud_energetico[frame] = (Rectangle){frame * 200, 200, 200, 200};
+                hud_energetico[frame] = (Rectangle){frame * LARGURA_FRAME_HUD, 1 * ALTURA_FRAME_HUD, 200, ALTURA_FRAME_HUD};
 
             //tiro explosivo
-                hud_tiro_explosivo[frame] = (Rectangle){frame * 200, 400, 200, 200};
+                hud_tiro_explosivo[frame] = (Rectangle){frame * LARGURA_FRAME_HUD, 2 * ALTURA_FRAME_HUD, 200, ALTURA_FRAME_HUD};
         }
             
     //carregar e preencher os sprites do jogador
@@ -165,7 +172,7 @@ void JogadorImagem(Jogador jogador){
         Vector2 alvo = {alvo.x = GetMouseX(), alvo.y = GetMouseY()},
                 direcao = {0.0f, 0.0f},
                 centro_torso = Centro_Torso(jogador.posicao),
-                centro_rotacao = {100, 100};
+                centro_rotacao = {65, 80};
 
         float angulo_rotacao = 0.0,
               distacia_mouse_corpo = Vector2Length(Vector2Subtract(alvo, centro_torso));
@@ -175,7 +182,7 @@ void JogadorImagem(Jogador jogador){
                 direcao = Vector2Subtract(alvo, centro_torso);
                 angulo_rotacao = atan2f(direcao.y, direcao.x) * RAD2DEG; 
             }
-            Rectangle destRec = {centro_torso.x, centro_torso.y, 400, 400};
+            Rectangle destRec = {centro_torso.x, centro_torso.y, 200, 200};
 
     //desenho do corpo
         //caso esteja no chao
@@ -232,10 +239,12 @@ void JogadorImagem(Jogador jogador){
     //Por fim a inversao do frame do torso quando necessaria
         if(alvo.x < (jogador.posicao.x)){
             frame_torso.height *= -1;
-            centro_rotacao.y += 200;
+            frame_torso.y -= 40;
+            frame_torso.x -= 30;
         }
     
     DrawTexturePro(sprite_jogador_torso, frame_torso, destRec, centro_rotacao, angulo_rotacao, WHITE); 
+    // Debug hitbox - > DrawRectangle(jogador.hitbox.x, jogador.hitbox.y, jogador.hitbox.width, jogador.hitbox.height, BLACK);
 }
 
 void JogadorUpdate(Jogador *jogador){      
@@ -244,6 +253,7 @@ void JogadorUpdate(Jogador *jogador){
         Vector2 mover = {0.0f, 0.0f};
             
     //no eixo x 
+        
         mover.x = (int)IsKeyDown(KEY_D) - (int)IsKeyDown(KEY_A); // fonte (clear code (raylib) 1:05:00)
         jogador->posicao.x += mover.x * jogador->velocidade * variacao_tempo;
         jogador->animacoes.andando = (mover.x != 0)? true: false;
@@ -269,10 +279,10 @@ void JogadorUpdate(Jogador *jogador){
         
     // Controle de hitbox
         //ajuste fino da hitbox
-            jogador->hitbox.x = jogador->posicao.x + 28;
-            jogador->hitbox.y = jogador->posicao.y + 17;
+            jogador->hitbox.x = jogador->posicao.x + 10;
+            jogador->hitbox.y = jogador->posicao.y - 5;
     
-        // Debug da hitbox do protagonista -> DrawRectangle(jogador->hitbox.x, jogador->hitbox.y, jogador->hitbox.width, jogador->hitbox.height, BLACK);
+        
         int valor_bateria = 1;
         if(VerificarColisaoBateria(jogador->hitbox, &valor_bateria)){
             jogador->baterias += 1;

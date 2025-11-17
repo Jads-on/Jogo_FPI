@@ -3,14 +3,16 @@
 
 //estados da maquina de estados que controla as fases e o menu
 typedef enum{
-    ESTADO_MENU = 0,
-    ESTADO_FASE_1 = 1,
-    ESTADO_FASE_2 = 2,
-    ESTADO_GAMEOVER = 3,
-    ESTADO_SAIR = 4,
-    ESTADO_CREDITOS = 5,
-    ESTADO_VOLUME = 6,
-    ESTADO_HISTORIA = 7
+    ESTADO_MENU,
+    ESTADO_INICIAR_FASE_1,
+    ESTADO_FASE_1,
+    ESTADO_INICIAR_FASE_2,
+    ESTADO_FASE_2,
+    ESTADO_GAMEOVER,
+    ESTADO_SAIR,
+    ESTADO_CREDITOS,
+    ESTADO_VOLUME,
+    ESTADO_HISTORIA,
     
 }Estados_Jogo;
 

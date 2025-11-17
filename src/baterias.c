@@ -24,8 +24,8 @@ void DesenharBaterias(){
     for(int i = 0; i < MAX_BATERIAS; i++) {
         if(baterias_dropadas[i].ativo) {
             // Desenha a bateria
-            DrawTexture(frame_bateria, baterias_dropadas[i].posicao.x, baterias_dropadas[i].posicao.y, WHITE);
-            //Debug de hitbox -> DrawRectangle(baterias_dropadas[i].hitbox.x, baterias_dropadas[i].hitbox.y,baterias_dropadas[i].hitbox.width, baterias_dropadas[i].hitbox.height, BLACK);
+            DrawTexture(frame_bateria, baterias_dropadas[i].posicao.x, baterias_dropadas[i].posicao.y -50, WHITE);
+            // Debud hitbox bateria -> DrawRectangle(baterias_dropadas[i].hitbox.x, baterias_dropadas[i].hitbox.y,baterias_dropadas[i].hitbox.width, baterias_dropadas[i].hitbox.height, BLACK);
         } 
     }
 
@@ -57,7 +57,7 @@ void SpawnarBaterias(Vector2 posicao, int valor){
             baterias_dropadas[idx_bateria].ativo = true;
             baterias_dropadas[idx_bateria].hitbox = (Rectangle){
             posicao.x + 174,  
-            posicao.y + 180,  
+            posicao.y + 130,  
             TAM_BATERIA, 
             TAM_BATERIA};
             return;
