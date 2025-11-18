@@ -21,8 +21,8 @@
 #define POSICAO_BARRA_X 0
 #define POSICAO_BARRA_Y 0
 #define ESPACO_ENTRE_BARRAS 50
-#define POSICAO_HUD_CENTRO_X 1650
-#define POSICAO_HUD_CENTRO_Y 780
+#define POSICAO_HUD_CENTRO_X 1690
+#define POSICAO_HUD_CENTRO_Y 740
 
 //Frame shape
 #define LARGURA_FRAME_JOGADOR 200
@@ -40,7 +40,7 @@
 
 //fisica
 #define GRAVIDADE 7000.0
-#define ALTURA_CHAO 860.0
+#define ALTURA_CHAO 850.0
 
 // Parametros das imagens usadas no hud 
 static Texture2D sprite_barras,
@@ -68,8 +68,6 @@ static Rectangle jogador_parado[2],
                  jogador_energetico_arma[3];
 
 Rectangle jogador_morto[2]; //usarei em gameover por isso n esta static
-
-
 
 static inline Vector2 Centro_Torso(Vector2 posicao_jogador){ //funcao que calcula onde unir o corpo e o tor
     return(Vector2){posicao_jogador.x + 60, posicao_jogador.y + 70};

@@ -7,6 +7,9 @@
         "menu.h": "c",
         "tiros.h": "c",
         "gestor_audio.h": "c",
-        "baterias.h": "c"
+        "baterias.h": "c",
+        "colisoes.h": "c",
+        "gestor_fases.h": "c",
+        "historia.h": "c"
     }
 }

@@ -11,6 +11,31 @@
 
 void ColisoesMapa(){}
 
+void Aplicar_Dano_em_Area(Vector2 centro_da_explosao, float raio, int dano){
+    // Afeta BATERIAS 
+    for(int i = 0; i < MAX_BATERIAS; i++) {
+        if (baterias_dropadas[i].ativo) {
+            if (CheckCollisionCircleRec(centro_da_explosao, raio, baterias_dropadas[i].hitbox)) {
+                baterias_dropadas[i].ativo = false; // Destrói
+            }
+        }
+    }
+
+    /*
+    // Afeta INIMIGOS 
+    for(int i = 0; i < MAX_INIMIGOS; i++) { // Supondo que você tenha esse array
+        if (inimigos[i].ativo) {
+            if (CheckCollisionCircleRec(centroExplosao, raio, inimigos[i].hitbox)) {
+                inimigos[i].vida -= dano; // Aplica o dano
+                
+               
+                // TocarSom(SOM_INIMIGO_1);
+            }
+        }
+    }
+    */
+}
+
 void ColisaoBalaBateria(){
     for(int bala = 0; bala < MAX_BALAS; bala++){ //verifica as balas que estao ativas
         if (balas[bala].ativo && !balas[bala].explodir) { 
@@ -19,7 +44,6 @@ void ColisaoBalaBateria(){
                 if (baterias_dropadas[bateria].ativo) {
                     if (CheckCollisionRecs(balas[bala].hitbox, baterias_dropadas[bateria].hitbox)){
                         baterias_dropadas[bateria].ativo = false;
-                        TocarSom(SOM_COLETA_BATERIA); 
 
                         // CORREÇÃO (Bug 2): Lida com o timer da explosão
                         if (balas[bala].tipo == Bala_Explosiva) {

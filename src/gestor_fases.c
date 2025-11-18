@@ -22,9 +22,17 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
     case ESTADO_INICIAR_FASE_1:
         Iniciar_Fase_1(estado);
         break;
+
+    case ESTADO_INTRO_FASE_1:
+        Atualizar_Intro_Fase_1(estado);
     
     case ESTADO_FASE_1:
         Atualizar_Fase_1(estado, jogador);
+        break;
+
+    case ESTADO_INICIAR_FASE_2:
+        Descarregar_Fase_1();
+        //Iniciar_Fase_2(estado); <-criar função
         break;
 
     case ESTADO_FASE_2:
@@ -50,6 +58,8 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
     
     case ESTADO_SAIR:
         DescarregarAssets();
+        DescarregarBateria();
+        Descarregar_Fase_1();
         break;
 
     default:
@@ -63,9 +73,14 @@ void Desenhar_Jogo(Estados_Jogo estado, Jogador jogador){
     case ESTADO_MENU:
         Desenhar_Menu();
         break;
+
+    case ESTADO_INTRO_FASE_1:
+        Desenhar_Intro_Fase1();
+        break;
     
     case ESTADO_FASE_1:
         DesenharFase1(jogador);
+        Desenhar_Mensagem_Fase_1();
         break;
 
     case ESTADO_FASE_2:

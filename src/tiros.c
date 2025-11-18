@@ -1,6 +1,8 @@
 #include "tiros.h"
 #include "raymath.h"
 #include "baterias.h"
+#include "colisoes.h"
+#include "gestor_audio.h"
 
 #define VELOCIDADE_TIRO 750
 #define Dano_Bala_Padrao 10
@@ -146,10 +148,19 @@ void Tiro_Imagem_Jogador(){
                 case Bala_Explosiva:
                     if (!balas[i].explodir){
                         DrawRectanglePro(retangulo_bala, origem_rotacao, balas[i].angulo, ORANGE);
+                        // Debug de hitbox - > DrawRectangle(balas[i].hitbox.x, balas[i].hitbox.y, balas[i].hitbox.width, balas[i].hitbox.height, BLACK);
                     }
 
                     // Desenha a explosao da bala
                     if(balas[i].explodir){
+
+                        //durante a explosao aumenta a area da hitbox
+                        balas[i].hitbox.x = balas[i].posicao.x - 50;
+                        balas[i].hitbox.y = balas[i].posicao.y - 50;
+                        balas[i].hitbox.height = 150;
+                        balas[i].hitbox.width = 150;
+
+                        Aplicar_Dano_em_Area(balas->posicao, 75, Dano_Bala_Explosiva);
 
                         //calculo do frame necessario
                         float progresso = 1.0f - (balas[i].tempo_explosao / TEMPO_EXPLOSAO); 
@@ -160,10 +171,10 @@ void Tiro_Imagem_Jogador(){
                         }
                                     
                         Rectangle dest = {
-                            balas[i].posicao.x,
-                            balas[i].posicao.y,
-                            LARGURA_FRAME_JOGADOR,
-                            ALTURA_FRAME_JOGADOR
+                            balas[i].posicao.x - 80,
+                            balas[i].posicao.y - 85,
+                            LARGURA_FRAME_JOGADOR * 2,
+                            ALTURA_FRAME_JOGADOR * 2
                         };
                         
                         Vector2 origem = {
@@ -184,15 +195,22 @@ void Tiro_Imagem_Jogador(){
                             0.0f,                     
                             Fade(WHITE, alpha)            
                         );
+                        TocarSom(SOM_EXPLOSAO);
+                        //Debug de hitbox da explosao - > DrawRectangle(balas[i].hitbox.x, balas[i].hitbox.y, balas[i].hitbox.width, balas[i].hitbox.height, BLACK);
+                        
+                        //ao terminar, volta as balas para o tamanho de hitbox normal
+                            balas[i].hitbox.x = balas[i].posicao.x + 50;
+                            balas[i].hitbox.y = balas[i].posicao.y + 50;
+                            balas[i].hitbox.height = 20;
+                            balas[i].hitbox.width = 10;
+                        
                     }
                     break;
                 
                 default:
                     break;
             }
-
         }
-
     } 
 }
 

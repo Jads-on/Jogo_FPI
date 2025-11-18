@@ -25,7 +25,7 @@ int main(void){
 
         //pre configuracoes do jogador
         Jogador jogador;
-        Vector2 Posicao_Inicial_Jogador = (Vector2){largura_tela/2, altura_tela/2};
+        Vector2 Posicao_Inicial_Jogador = (Vector2){400, altura_tela};
 
         //inicializacao da maquina de estados
         static Estados_Jogo estado_atual = ESTADO_MENU,

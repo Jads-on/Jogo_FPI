@@ -11,6 +11,8 @@ void ColisaoMapa();
 
 void ColisaoBalaBateria();
 
+void Aplicar_Dano_em_Area(Vector2 centro_da_explosao, float raio, int dano);
+
 int Verificar_Dano_Balas_Alvo(Rectangle hitbox_alvo);
 
 int Verificar_Dano_Explosao_Alvo(Rectangle hitbox_alvo);

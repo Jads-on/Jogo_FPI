@@ -6,7 +6,13 @@
 
 void Iniciar_Fase_1(Estados_Jogo *estado);
 
+void Atualizar_Intro_Fase_1(Estados_Jogo *estado);
+
 void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador);
+
+void Desenhar_Intro_Fase1();
+
+void Desenhar_Mensagem_Fase_1();
 
 void DesenharFase1(Jogador Jogador);
 
