@@ -5,6 +5,8 @@
 #include "fases_estados.h"
 #include "gestor_fases.h"
 #include "gestor_audio.h"
+#include "drone.h"
+
 
 #define QTD_TELAS 5
 #define LARGURA_TELA 1920
@@ -54,6 +56,7 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
         JogadorUpdate(jogador);
         AtualizarTiros();
         ColisaoBalaBateria();
+        AtualizarDrone(jogador);
 
         if(jogador->vida <= 0){
             TocarSom(SOM_MORTE_JOGADOR);
@@ -94,6 +97,10 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
                     break;
                 }
                 idx_area_atual++;
+                if (idx_area_atual == 3){
+                    drone_ativo = true;
+                    IniciarDrone();
+                }
             }
         }
 
@@ -160,6 +167,7 @@ void DesenharFase1(Jogador jogador){
         DrawTexture(mapa[idx_area_atual], 0, 0, WHITE);
     // Desenho do Jogador
         JogadorImagem(jogador);
+        DesenharDrone();
 
     //Assets
         // Baterias Dropadas

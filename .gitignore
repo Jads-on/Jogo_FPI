@@ -2,4 +2,6 @@
 *.exe
 SYNTHETIC
 jogo
-jogo_backup
+jogo_backup.DS_Store
+SYNTHETIC
+build/
