@@ -5,6 +5,7 @@
 #include "jogador.h"
 
 #define MAX_BALAS 30
+#define MAX_BALAS_INIMIGOS 50
 
 typedef struct{
 

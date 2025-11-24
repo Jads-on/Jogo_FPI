@@ -5,6 +5,7 @@
 #include "fases_estados.h"
 #include "gestor_fases.h"
 #include "gestor_audio.h"
+#include <stdio.h>
 
 #define QTD_TELAS 5
 #define LARGURA_TELA 1920
@@ -50,10 +51,17 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
         timer_mensagem_fase += GetFrameTime();
     }
 
-    // Atualiza o jogador
+    // Atualiza o jogo
+        float delta = GetFrameTime();
         JogadorUpdate(jogador);
         AtualizarTiros();
-        ColisaoBalaBateria();
+        AtualizarBalasInimigos(delta, LARGURA_TELA, ALTURA_TELA);
+        AtualizarInimigos(delta, jogador->posicao);
+        ColisaoBalaBateria(jogador);          
+        ColisaoBalaInimigo();
+        //printf("Verificando colisão jogador...\n"); // Debug
+        ColisaoBalaInimigoJogador(jogador);
+        
 
         if(jogador->vida <= 0){
             TocarSom(SOM_MORTE_JOGADOR);
@@ -69,6 +77,7 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
 
     //transição entre areas
         if(jogador->posicao.x > LARGURA_TELA){
+            CarregarInimigosDaTela(idx_area_atual);
             if(idx_area_atual < 4){
                 switch (idx_area_atual){
                 case 0:
@@ -160,6 +169,7 @@ void DesenharFase1(Jogador jogador){
         DrawTexture(mapa[idx_area_atual], 0, 0, WHITE);
     // Desenho do Jogador
         JogadorImagem(jogador);
+        DesenharInimigos();
 
     //Assets
         // Baterias Dropadas
@@ -172,6 +182,7 @@ void DesenharFase1(Jogador jogador){
         
         //Tiros
             Tiro_Imagem_Jogador();
+            DesenharBalasInimigos();
 }
 
 void Descarregar_Fase_1(){
