@@ -1,5 +1,20 @@
-*.o
-*.exe
+# Arquivos do MacOS
+.DS_Store
+*/.DS_Store
+
+# Build e executáveis
+build/
 SYNTHETIC
+*.exe
+*.out
+
+# Objetos de compilação
+*.o
+
+# Backups
+*_backup
+*_old
+
+# Binários aleatórios
 jogo
 jogo_backup
