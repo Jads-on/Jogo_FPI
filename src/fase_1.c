@@ -6,7 +6,8 @@
 #include "gestor_fases.h"
 #include "gestor_audio.h"
 #include "drone.h"
-
+#include <stdio.h>
+#include <stdbool.h>
 
 #define QTD_TELAS 5
 #define LARGURA_TELA 1920
@@ -20,7 +21,8 @@
 #define DURACAO_MENSAGEM_FASE 7.0f        // 5 segundos para o título sumir
 
 extern Estados_Jogo estado_anterior; // extern para ser usado em outras fontes  
-      
+
+static bool drone_spawnou[QTD_TELAS] = { false, false, false, false, false };
 static float timer_mensagem_fase = 0.0f; 
 static Texture2D mapa[QTD_TELAS];      
 int idx_area_atual = 0;
@@ -28,12 +30,11 @@ int idx_area_atual = 0;
 void Iniciar_Fase_1(Estados_Jogo *estado){// careega o mapa e os inimigos
 
     //carrega o mapa
-        mapa[0] = LoadTexture("assets/sprites/mapas/Fase_1/area_1.png");
-        mapa[1] = LoadTexture("assets/sprites/mapas/Fase_1/area_2.png");
-        mapa[2] = LoadTexture("assets/sprites/mapas/Fase_1/area_3.png");
-        mapa[3] = LoadTexture("assets/sprites/mapas/Fase_1/area_4.png");
-        mapa[4] = LoadTexture("assets/sprites/mapas/Fase_1/area_5.png");
-
+    mapa[0] = LoadTexture("assets/sprites/mapas/Fase_1/area_1.png");
+    mapa[1] = LoadTexture("assets/sprites/mapas/Fase_1/area_2.png");
+    mapa[2] = LoadTexture("assets/sprites/mapas/Fase_1/area_3.png");
+    mapa[3] = LoadTexture("assets/sprites/mapas/Fase_1/area_4.png");
+    mapa[4] = LoadTexture("assets/sprites/mapas/Fase_1/area_5.png");
 
     *estado = ESTADO_INTRO_FASE_1; //ao finalizar segue para a fase 1
 }
@@ -52,96 +53,117 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
         timer_mensagem_fase += GetFrameTime();
     }
 
-    // Atualiza o jogador
-        JogadorUpdate(jogador);
-        AtualizarTiros();
-        ColisaoBalaBateria();
-        AtualizarDrone(jogador);
+    // Atualiza o jogo
+    float delta = GetFrameTime();
 
-        if(jogador->vida <= 0){
-            TocarSom(SOM_MORTE_JOGADOR);
-            *estado = ESTADO_GAMEOVER;
-        }
+    JogadorUpdate(jogador);
+    AtualizarTiros();
 
-        //detecta que chegou ao final da fase
-        if(idx_area_atual == 4){
-            if((jogador->hitbox.x >= INICIO_SAIDA) &&(jogador->hitbox.x <= FIM_SAIDA)){
-                *estado = ESTADO_INICIAR_FASE_2;
-            }
+    // --- coisas novas da main ---
+    AtualizarBalasInimigos(delta, LARGURA_TELA, ALTURA_TELA);
+    AtualizarInimigos(delta, jogador->posicao);
+    ColisaoBalaBateria(jogador);          
+    ColisaoBalaInimigo();
+    ColisaoBalaInimigoJogador(jogador);
+
+    // --- drone ---
+    AtualizarDrone(jogador);
+
+    if(jogador->vida <= 0){
+        TocarSom(SOM_MORTE_JOGADOR);
+        *estado = ESTADO_GAMEOVER;
+    }
+
+    //detecta que chegou ao final da fase
+    if(idx_area_atual == 4){
+        if((jogador->hitbox.x >= INICIO_SAIDA) &&(jogador->hitbox.x <= FIM_SAIDA)){
+            *estado = ESTADO_INICIAR_FASE_2;
         }
+    }
 
     //transição entre areas
-        if(jogador->posicao.x > LARGURA_TELA){
-            if(idx_area_atual < 4){
-                switch (idx_area_atual){
-                case 0:
-                    jogador->posicao.x = 0;
-                    jogador->posicao.y = 545;
-                    break;
+    if(jogador->posicao.x > LARGURA_TELA){
+        CarregarInimigosDaTela(idx_area_atual);
 
-                case 1:
-                    jogador->posicao.x = 0;
-                    jogador->posicao.y = 380;
-                    break;
+        if(idx_area_atual < 4){
+            switch (idx_area_atual){
+            case 0:
+                jogador->posicao.x = 0;
+                jogador->posicao.y = 545;
+                break;
 
-                case 2:
-                    jogador->posicao.x = 0;
-                    jogador->posicao.y = 630;
-                    break;
+            case 1:
+                jogador->posicao.x = 0;
+                jogador->posicao.y = 380;
+                break;
 
-                case 3:
-                    jogador->posicao.x = 0;
-                    jogador->posicao.y = 805;
-                    break;
-                default:
-                    break;
-                }
-                idx_area_atual++;
-                if (idx_area_atual == 3){
-                    drone_ativo = true;
-                    IniciarDrone();
-                }
+            case 2:
+                jogador->posicao.x = 0;
+                jogador->posicao.y = 630;
+                break;
+
+            case 3:
+                jogador->posicao.x = 0;
+                jogador->posicao.y = 805;
+                break;
+
+            default:
+                break;
+            }
+
+            idx_area_atual++;
+
+            // --- drone: spawn por sala (sala 2 e 3 = idx 1 e 2) ---
+            if ((idx_area_atual == 1 || idx_area_atual == 2) && !drone_spawnou[idx_area_atual]) {
+                drone_spawnou[idx_area_atual] = true;  // marca que já nasceu nessa sala
+                drone_ativo = true;
+                IniciarDrone();
+            }
+
+            // se saiu das salas do drone, garante que fica desligado
+            if (idx_area_atual != 1 && idx_area_atual != 2) {
+                drone_ativo = false;
             }
         }
+    }
 
     //evita sair do limite do mapa
-        if(jogador->posicao.x < 0){
-            jogador->posicao.x = 0;
-        }
-        if(jogador->posicao.x > LARGURA_TELA - 180 && (idx_area_atual == 4)){
-            jogador->posicao.x = LARGURA_TELA - 180;
-        }
+    if(jogador->posicao.x < 0){
+        jogador->posicao.x = 0;
+    }
+    if(jogador->posicao.x > LARGURA_TELA - 180 && (idx_area_atual == 4)){
+        jogador->posicao.x = LARGURA_TELA - 180;
+    }
 
     //edicao do volume no meio do jogo (substitui um pause)
-        if(IsKeyPressed(KEY_V)){  
-            estado_anterior = ESTADO_FASE_1; //salva o estado anterior
-            *estado = ESTADO_VOLUME;
-            TocarSom(SOM_MENU_SELECT);
-        }
+    if(IsKeyPressed(KEY_V)){  
+        estado_anterior = ESTADO_FASE_1; //salva o estado anterior
+        *estado = ESTADO_VOLUME;
+        TocarSom(SOM_MENU_SELECT);
+    }
 }
 
 void Desenhar_Intro_Fase1(){
     DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), DARKGRAY);
-    
+
     //Menu de instruções
     DrawText("Instruções:", 100, 50, 80, WHITE);
     DrawText(" - As imagens indicam quando é possivel usar aquela habilidade", 150, 330, 40, WHITE);
     DrawText(" - Use Q/R/E para usar as habilidades", 150, 430, 40, WHITE);
     DrawText(" - Se mova com A/D e atire com o cursor", 150, 530, 40, WHITE);
     DrawText("Aperte ENTER para continuar", 1200, 900, 40, WHITE);
-    
 }
 
 void Desenhar_Mensagem_Fase_1() {
-    
+
     if (timer_mensagem_fase >= DURACAO_MENSAGEM_FASE) {
         return; // Sai da função se o tempo acabou
     }
-    
+
     //Fade Out (Efeito de esvanecer)
     float progresso = timer_mensagem_fase / DURACAO_MENSAGEM_FASE; // Vai de 0.0 a 1.0
     float alpha = 1.0f; //Opacidade total
-    
+
     if (progresso > 0.7f) {
         alpha = 1.0f - ((progresso - 0.7f) / 0.3f);
     }
@@ -149,11 +171,8 @@ void Desenhar_Mensagem_Fase_1() {
     // Cor do texto
     Color cor_texto = Fade(WHITE, alpha); 
 
-    // 2. Desenho do Fundo Semi-Transparente
-    // Criamos um retângulo semi-transparente para o texto (se desejado)
     DrawRectangle(0, 80, GetScreenWidth(), 180, Fade(BLACK, 0.6f * alpha)); 
 
-    // 3. Desenho do Conteúdo
     DrawText("Fase 1: O Distrito", 
              GetScreenWidth() / 2 - MeasureText("Fase 1: O distrito", 60) / 2, 
              100, 60, cor_texto);
@@ -164,25 +183,31 @@ void Desenhar_Mensagem_Fase_1() {
 }
 
 void DesenharFase1(Jogador jogador){
-        DrawTexture(mapa[idx_area_atual], 0, 0, WHITE);
+    DrawTexture(mapa[idx_area_atual], 0, 0, WHITE);
+
     // Desenho do Jogador
-        JogadorImagem(jogador);
-        DesenharDrone();
+    JogadorImagem(jogador);
+
+    // Inimigos
+    DesenharInimigos();
+
+    // Drone (só aparece se ativo)
+    DesenharDrone();
 
     //Assets
-        // Baterias Dropadas
-            DesenharBaterias();
-    
-        // Barras e Hud
-            JogadorEnergeticoImagem(jogador);
-            JogadorVidaImagem(jogador);
-            HudHabilidadesImagem(jogador);
-        
-        //Tiros
-            Tiro_Imagem_Jogador();
+    DesenharBaterias();
+
+    JogadorEnergeticoImagem(jogador);
+    JogadorVidaImagem(jogador);
+    HudHabilidadesImagem(jogador);
+
+    //Tiros
+    Tiro_Imagem_Jogador();
+    DesenharBalasInimigos();
+
+    DrawText(TextFormat("AREA: %d", idx_area_atual), 20, 20, 30, RED);
 }
 
 void Descarregar_Fase_1(){
-
     UnloadTexture(mapa[0]);
- }
+}

@@ -13,6 +13,7 @@
 #include "creditos.h"
 #include "gestor_audio.h"
 #include "baterias.h"
+#include "inimigos.h"
 
 int main(void){
 
@@ -39,6 +40,7 @@ int main(void){
    
     //inicializacao
     IniciarJogador(&jogador, Posicao_Inicial_Jogador);
+    IniciarInimigos();
     IniciarTiros();
     IniciarBaterias();
     Iniciar_Gestor_Audio();

@@ -3,6 +3,7 @@
 #include "baterias.h"
 #include "colisoes.h"
 #include "gestor_audio.h"
+#include "inimigos.h"
 
 #define VELOCIDADE_TIRO 750
 #define Dano_Bala_Padrao 10
@@ -17,21 +18,24 @@ static Texture2D explosao;
 static Rectangle frames_explosao[3];
 
 Bala balas[MAX_BALAS];
+Bala balasInimigos[MAX_BALAS_INIMIGOS];
 
 void IniciarTiros(){ //evita lixo de memoria e bugs 
 
+    //Inicia a bala do jogador
     for(int i = 0; i < MAX_BALAS; i++){
-        balas[i].posicao = (Vector2){0, 0};
-        balas[i].direcao = (Vector2){0, 0};
-        balas[i].hitbox = (Rectangle){balas[i].posicao.x, balas[i].posicao.y, 20, 10};
-        balas[i].angulo = 0;
-        balas[i].velocidade = 0;
-        balas[i].dano = 0;
-        balas[i].ativo = false;
-        balas[i].tipo = 0;
+        balas[i].posicao = balasInimigos[i].posicao = (Vector2){0, 0};
+        balas[i].direcao = balasInimigos[i].direcao = (Vector2){0, 0};
+        balas[i].hitbox = balasInimigos[i].hitbox = (Rectangle){balas[i].posicao.x, balas[i].posicao.y, 20, 10};
+        balas[i].angulo = balasInimigos[i].angulo = 0;
+        balas[i].velocidade = balasInimigos[i].velocidade = 0;
+        balas[i].dano = balasInimigos[i].dano = 0;
+        balas[i].ativo = balasInimigos[i].ativo = false;
+        balas[i].tipo = balasInimigos[i].tipo = 0;
      
-        balas[i].explodir = false;
-        balas[i].tempo_explosao = 0.0;
+        balas[i].explodir = balasInimigos[i].explodir = false;
+        balas[i].tempo_explosao = balasInimigos[i].tempo_explosao = 0.0;
+        balasInimigos[i].dano = 10;
     }
     explosao = LoadTexture("assets/sprites/jogador/jogador_spritesheet (cabeca e efeitos).png");
 
