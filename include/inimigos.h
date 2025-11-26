@@ -22,9 +22,9 @@ typedef struct {
 } Inimigo;
 
 
-extern Inimigo inimigos[MAX_INIMIGOS];
+extern Inimigo spiderlith[MAX_INIMIGOS];
 extern Bala balasInimigos[MAX_BALAS_INIMIGOS]; 
-
+extern bool drone_ativo;
 
 void DescarregarTexturasInimigos(void);
 
@@ -38,5 +38,10 @@ void AtualizarBalasInimigos(float delta, int larguraTela, int alturaTela);
 
 void DesenharInimigos(void);
 void DesenharBalasInimigos(void);
+
+void IniciarDrone();
+void AtualizarDrone(Jogador *jogador);
+void DesenharDrone();
+
 
 #endif

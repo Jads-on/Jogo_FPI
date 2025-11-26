@@ -25,6 +25,7 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
 
     case ESTADO_INTRO_FASE_1:
         Atualizar_Intro_Fase_1(estado);
+        break;
     
     case ESTADO_FASE_1:
         Atualizar_Fase_1(estado, jogador);

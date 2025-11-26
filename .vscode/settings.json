@@ -11,6 +11,7 @@
         "colisoes.h": "c",
         "gestor_fases.h": "c",
         "historia.h": "c",
-        "inimigos.h": "c"
+        "inimigos.h": "c",
+        "stdbool.h": "c"
     }
 }

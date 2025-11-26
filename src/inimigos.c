@@ -4,25 +4,31 @@
 #define ALTURA_FRAME_INIMIGO 100
 #define LARGURA_FRAME_INIMIGO 100
 #define QTD_FRAMES_INIMIGO 2
+
+#define VIDA_INIMIGO 50
+
 //Variáveis Globais
-Inimigo inimigos[MAX_INIMIGOS];
+Inimigo spiderlith[MAX_INIMIGOS];
 
 static Texture2D texturaInimigo;
 static Rectangle frame_inimigo[2];
-int idx_frame_inimigo_atual = 0;
+int idx_frame_spiderlith_atual = 0;
 
 void IniciarInimigos(void) {
 
-    texturaInimigo = LoadTexture("assets/sprites/inimigos/inimigo.png");
+    texturaInimigo = LoadTexture("assets/sprites/inimigos/spiderlith.png");
 
     for(int frame = 0; frame < QTD_FRAMES_INIMIGO; frame++){
         frame_inimigo[frame] = (Rectangle) {LARGURA_FRAME_INIMIGO * frame, ALTURA_FRAME_INIMIGO, LARGURA_FRAME_INIMIGO, ALTURA_FRAME_INIMIGO};
     }
 
-    // Limpa array de inimigos
+    // Limpa array de spiderlith
     for (int i = 0; i < MAX_INIMIGOS; i++) {
-        inimigos[i].ativo = false;
+        spiderlith[i].ativo = false;
+        spiderlith->vida = VIDA_INIMIGO;
+        spiderlith->tempoDisparo = 0;
     }
+    
     // Limpa array de balas (Inicializa struct completa)
     for (int i = 0; i < MAX_BALAS_INIMIGOS; i++) {
         balasInimigos[i].ativo = false;
@@ -70,7 +76,7 @@ void AtirarNoJogador(Vector2 posicaoOrigem, Vector2 posicaoAlvo) {
             // 5. Calcula o Ângulo (Rotação do sprite)
             // atan2f devolve em radianos, convertemos para graus
             balasInimigos[i].angulo = atan2f(direcao.y, direcao.x) * RAD2DEG;
-            idx_frame_inimigo_atual = 1;
+            idx_frame_spiderlith_atual = 1;
 
             break; 
         }
@@ -83,17 +89,17 @@ void DescarregarTexturasInimigos(void) {
 
 void SpawnarInimigoEm(Vector2 posicao) {
     for (int i = 0; i < MAX_INIMIGOS; i++) {
-        if (!inimigos[i].ativo) {
-            inimigos[i].pos = posicao;
-            inimigos[i].hitbox.x = posicao.x;
-            inimigos[i].hitbox.y = posicao.y;
-            inimigos[i].vida = 50;
-            inimigos[i].ativo = true;
-            inimigos[i].tempoDisparo = 0; 
-            inimigos[i].frameAtual = 0;
-            inimigos[i].tempoFrame = 0;
-            inimigos[i].hitbox.width = 100; 
-            inimigos[i].hitbox.height = 100;
+        if (!spiderlith[i].ativo) {
+            spiderlith[i].vida = 50;
+            spiderlith[i].ativo = true;
+            spiderlith[i].tempoDisparo = 0; 
+            spiderlith[i].frameAtual = 0;
+            spiderlith[i].tempoFrame = 0;
+            spiderlith[i].pos = posicao;
+            spiderlith[i].hitbox.x = posicao.x;
+            spiderlith[i].hitbox.y = posicao.y;
+            spiderlith[i].hitbox.width = 50; 
+            spiderlith[i].hitbox.height = 100;
             break;
         }
     }
@@ -102,7 +108,7 @@ void SpawnarInimigoEm(Vector2 posicao) {
 void CarregarInimigosDaTela(int indiceTela) {
     // Mata todos
     for (int i = 0; i < MAX_INIMIGOS; i++) {
-        inimigos[i].ativo = false;
+        spiderlith[i].ativo = false;
     }
     // Limpa balas (Opcional, mas bom para não levar tiros de uma tela pra outra)
     for (int i = 0; i < MAX_BALAS_INIMIGOS; i++) {
@@ -128,39 +134,39 @@ void CarregarInimigosDaTela(int indiceTela) {
 
 void AtualizarInimigos(float delta, Vector2 posicaoJogador) {
     for (int i = 0; i < MAX_INIMIGOS; i++) {
-        if (inimigos[i].ativo) {
-            inimigos[i].hitbox.x = inimigos[i].pos.x;
-             inimigos[i].hitbox.y = inimigos[i].pos.y;
+        if (spiderlith[i].ativo) {
+            spiderlith[i].hitbox.x = spiderlith[i].pos.x;
+             spiderlith[i].hitbox.y = spiderlith[i].pos.y - 50;
             // Animação
-            inimigos[i].tempoFrame += delta;
-            if (inimigos[i].tempoFrame >= VELOCIDADE_FRAME) {
-                inimigos[i].tempoFrame = 0;
-                inimigos[i].frameAtual = (inimigos[i].frameAtual + 1) % FRAMES_INIMIGO;
+            spiderlith[i].tempoFrame += delta;
+            if (spiderlith[i].tempoFrame >= VELOCIDADE_FRAME) {
+                spiderlith[i].tempoFrame = 0;
+                spiderlith[i].frameAtual = (spiderlith[i].frameAtual + 1) % FRAMES_INIMIGO;
             }
             
             // Tiro
-            inimigos[i].tempoDisparo += delta;
-            if (inimigos[i].tempoDisparo > 1.5f) { 
+            spiderlith[i].tempoDisparo += delta;
+            if (spiderlith[i].tempoDisparo > 1.5f) { 
                 // Origem do tiro um pouco à frente do inimigo
-                Vector2 origemTiro = { inimigos[i].pos.x, inimigos[i].pos.y };
+                Vector2 origemTiro = { spiderlith[i].pos.x, spiderlith[i].pos.y };
                 AtirarNoJogador(origemTiro, posicaoJogador);
-                inimigos[i].tempoDisparo = 0;
+                spiderlith[i].tempoDisparo = 0;
             }
             
             // Morte/Despawn (Exemplo)
-            if (inimigos[i].vida <= 0){
-                if( inimigos[i].ativo){
-                    Vector2 pos = {inimigos[i].hitbox.x, inimigos[i].hitbox.y};
+            if (spiderlith[i].vida <= 0){
+                if( spiderlith[i].ativo){
+                    Vector2 pos = {spiderlith[i].hitbox.x, spiderlith[i].hitbox.y};
                     SpawnarBaterias(pos, 1);
                 }
-                inimigos[i].ativo = false;
+                spiderlith[i].ativo = false;
             }
         }
     }
 }
 
 void AtualizarBalasInimigos(float delta, int larguraTela, int alturaTela) {
-    idx_frame_inimigo_atual = 0;
+    idx_frame_spiderlith_atual = 0;
     for (int i = 0; i < MAX_BALAS_INIMIGOS; i++) {
         if (balasInimigos[i].ativo) {
             
@@ -170,7 +176,7 @@ void AtualizarBalasInimigos(float delta, int larguraTela, int alturaTela) {
             
             // 2. Sincronizar Hitbox com a nova Posição
             balasInimigos[i].hitbox.x = balasInimigos[i].posicao.x - 5;
-            balasInimigos[i].hitbox.y = balasInimigos[i].posicao.y + 5;
+            balasInimigos[i].hitbox.y = balasInimigos[i].posicao.y + 10;
 
             // 3. Remover se sair da tela
             if (balasInimigos[i].posicao.x < -20 || balasInimigos[i].posicao.x > larguraTela + 20 ||
@@ -183,12 +189,11 @@ void AtualizarBalasInimigos(float delta, int larguraTela, int alturaTela) {
 
 void DesenharInimigos(void) {
     for (int i = 0; i < MAX_INIMIGOS; i++) {
-        if (inimigos[i].ativo) {
-            Vector2 posicao_desenho = { inimigos[i].pos.x - 25, inimigos[i].pos.y - 50};
+        if (spiderlith[i].ativo) {
+            Vector2 posicao_desenho = { spiderlith[i].pos.x - 25, spiderlith[i].pos.y - 50};
 
-            DrawTextureRec(texturaInimigo, frame_inimigo[idx_frame_inimigo_atual], posicao_desenho, WHITE);
-            //DrawRectangle(inimigos[i].hitbox.x, inimigos[i].hitbox.y,50,50, BLACK);
-            
+            DrawTextureRec(texturaInimigo, frame_inimigo[idx_frame_spiderlith_atual], posicao_desenho, WHITE);
+            //Debug da hitbox do inimigo -> DrawRectangle(spiderlith[i].hitbox.x, spiderlith[i].hitbox.y, spiderlith[i].hitbox.width, spiderlith[i].hitbox.height, BLACK);
         }
     }
 }
@@ -207,14 +212,14 @@ void DesenharBalasInimigos(void) {
             };
             
             DrawRectanglePro(dest, source, balasInimigos[i].angulo, RED);
-            /* Debug hitbox tiro_inimigo -> DrawRectangle(
+            /* Debug da hitbox do tiro do inimigo -> DrawRectangle(
                 (int)balasInimigos[i].hitbox.x,
                 (int)balasInimigos[i].hitbox.y,
                 (int)balasInimigos[i].hitbox.width,
                 (int)balasInimigos[i].hitbox.height,
                 BLACK
-            );
-            */
+            );*/
+            
         }
     }
 }

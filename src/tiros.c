@@ -7,8 +7,8 @@
 
 #define VELOCIDADE_TIRO 750
 #define Dano_Bala_Padrao 10
-#define Dano_Bala_Perfurante 20
-#define Dano_Bala_Explosiva 5
+#define Dano_Bala_Perfurante 15
+#define Dano_Bala_Explosiva 20
 #define TEMPO_EXPLOSAO 0.2f
 #define LARGURA_FRAME_JOGADOR 200
 #define ALTURA_FRAME_JOGADOR 200
@@ -110,7 +110,7 @@ void AtualizarTiros(){
                     balas[idx].explodir = false;   // Reseta flag
                 }
                 
-                continue;  // Não atualiza posição durante explosão
+                continue;  
             }
 
             balas[idx].posicao.x += balas[idx].direcao.x * balas[idx].velocidade * variacao_tempo;
@@ -163,8 +163,6 @@ void Tiro_Imagem_Jogador(){
                         balas[i].hitbox.y = balas[i].posicao.y - 50;
                         balas[i].hitbox.height = 150;
                         balas[i].hitbox.width = 150;
-
-                        Aplicar_Dano_em_Area(balas->posicao, 75, Dano_Bala_Explosiva);
 
                         //calculo do frame necessario
                         float progresso = 1.0f - (balas[i].tempo_explosao / TEMPO_EXPLOSAO); 

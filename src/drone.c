@@ -1,6 +1,8 @@
 #include "drone.h"
 #include "raymath.h"
-#include "tiros.h"      // <-- MAX_BALAS e balas[] do player
+#include "tiros.h" 
+#include "colisoes.h"     
+#include "gestor_audio.h"
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -118,7 +120,7 @@ static void DesenharTirosDrone(){
 void IniciarDrone() {
     sprite_drone = LoadTexture("assets/sprites/inimigos/drone.png");
 
-    printf("Drone sprite size: %d x %d\n", sprite_drone.width, sprite_drone.height);
+ 
 
     pos_drone = (Vector2){1800, 120};  
     estado_drone = 0;
@@ -170,12 +172,31 @@ static void LaserDrone(Jogador *jogador) {
 static void TomarDanoDrone() {
     for(int i = 0; i < MAX_BALAS; i++){
         if(balas[i].ativo && CheckCollisionRecs(balas[i].hitbox, hitbox_drone)){
-            vida_drone -= 1;
-            balas[i].ativo = false;
+            vida_drone -= balas[i].dano;
+            
+
+            //timer da explosão
+            if (balas[i].tipo == Bala_Explosiva) {
+
+                balas[i].explodir = true; 
+                balas[i].velocidade = 0;
+
+                // FORÇA o timer para a duração da explosão 
+                balas[i].tempo_explosao = 0.2f; 
+                Aplicar_Dano_em_Area(balas[i].posicao, 75, balas[i].dano);
+                           
+            } 
+            else if (balas[i].tipo != Bala_Perfurante) { 
+
+                balas[i].ativo = false; 
+
+            }
         }
     }
 
     if(vida_drone <= 0){
+        TocarSom(SOM_INIMIGO_2);
+        SpawnarBaterias(pos_drone, 1);
         drone_ativo = false;
     }
 }

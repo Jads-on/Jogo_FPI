@@ -6,7 +6,7 @@ BUILD_DIR = build
 
 #  === ARQUIVOS-FONTE ===
 
-SRC = src/baterias.c src/camera.c src/colisoes.c src/creditos.c src/fase_1.c src/gameover.c src/gestor_audio.c src/gestor_fases.c src/historia.c src/inimigos.c src/jogador.c src/main.c src/menu.c src/spawn.c src/tiros.c src/drone.c
+SRC = src/baterias.c src/colisoes.c src/creditos.c src/fase_1.c src/gameover.c src/gestor_audio.c src/gestor_fases.c src/historia.c src/inimigos.c src/jogador.c src/main.c src/menu.c src/tiros.c src/drone.c
 OBJ = $(patsubst src/%.c,$(BUILD_DIR)/%.o,$(SRC))
 OUT = SYNTHETIC
 
