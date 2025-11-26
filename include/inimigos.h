@@ -43,5 +43,6 @@ void IniciarDrone();
 void AtualizarDrone(Jogador *jogador);
 void DesenharDrone();
 
+bool TodosInimigosMortos();
 
 #endif

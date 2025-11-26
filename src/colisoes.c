@@ -89,7 +89,6 @@ void ColisaoBalaInimigo(){
                         
                         //aplica Dano Direto
                         spiderlith[j].vida -= balas[i].dano;
-                        TocarSom(SOM_INIMIGO_1);
 
                         //timer da explosão
                         if (balas[i].tipo == Bala_Explosiva) {

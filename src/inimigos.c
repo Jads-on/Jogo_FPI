@@ -1,4 +1,5 @@
 #include "inimigos.h"
+#include "gestor_audio.h"
 #include <math.h> 
 
 #define ALTURA_FRAME_INIMIGO 100
@@ -157,6 +158,7 @@ void AtualizarInimigos(float delta, Vector2 posicaoJogador) {
             if (spiderlith[i].vida <= 0){
                 if( spiderlith[i].ativo){
                     Vector2 pos = {spiderlith[i].hitbox.x, spiderlith[i].hitbox.y};
+                    TocarSom(SOM_INIMIGO_1);
                     SpawnarBaterias(pos, 1);
                 }
                 spiderlith[i].ativo = false;
@@ -222,4 +224,15 @@ void DesenharBalasInimigos(void) {
             
         }
     }
+}
+
+bool TodosInimigosMortos(void) {
+    for (int i = 0; i < MAX_INIMIGOS; i++) {
+        // Se encontrar UM inimigo ativo, retorna falso (não matou todos)
+        if (spiderlith[i].ativo || drone_ativo) {
+            return false; 
+        }
+    }
+    // Se o loop acabou e não achou ninguém ativo, retorna verdadeiro
+    return true; 
 }

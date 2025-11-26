@@ -71,6 +71,7 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
 
     if(jogador->vida <= 0){
         TocarSom(SOM_MORTE_JOGADOR);
+        idx_area_atual = 0;
         *estado = ESTADO_GAMEOVER;
     }
 
@@ -82,47 +83,48 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
     }
 
     //transição entre areas
-    if(jogador->posicao.x > LARGURA_TELA){
-        CarregarInimigosDaTela(idx_area_atual);
+    if(TodosInimigosMortos()){
+        if(jogador->posicao.x > LARGURA_TELA){
+            CarregarInimigosDaTela(idx_area_atual);
 
-        if(idx_area_atual < 4){
-            switch (idx_area_atual){
-            case 0:
-                jogador->posicao.x = 0;
-                jogador->posicao.y = 545;
-                break;
+            if(idx_area_atual < 4){
+                switch (idx_area_atual){
+                case 0:
+                    jogador->posicao.x = 0;
+                    jogador->posicao.y = 545;
+                    break;
 
-            case 1:
-                jogador->posicao.x = 0;
-                jogador->posicao.y = 380;
-                break;
+                case 1:
+                    jogador->posicao.x = 0;
+                    jogador->posicao.y = 380;
+                    break;
 
-            case 2:
-                jogador->posicao.x = 0;
-                jogador->posicao.y = 630;
-                break;
+                case 2:
+                    jogador->posicao.x = 0;
+                    jogador->posicao.y = 630;
+                    break;
 
-            case 3:
-                jogador->posicao.x = 0;
-                jogador->posicao.y = 805;
-                break;
+                case 3:
+                    jogador->posicao.x = 0;
+                    jogador->posicao.y = 805;
+                    break;
 
-            default:
-                break;
-            }
+                default:
+                    break;
+                }
 
-            idx_area_atual++;
+                idx_area_atual++;
 
-            // --- drone: spawn por sala (sala 2 e 3 = idx 1 e 2) ---
-            if ((idx_area_atual == 1 || idx_area_atual == 2) && !drone_spawnou[idx_area_atual]) {
-                drone_spawnou[idx_area_atual] = true;  // marca que já nasceu nessa sala
-                drone_ativo = true;
-                IniciarDrone();
-            }
+                // --- drone: spawn por sala (sala 2 e 3 = idx 1 e 2) ---
+                if ((idx_area_atual == 1 || idx_area_atual == 2) && !drone_spawnou[idx_area_atual]){
+                    drone_ativo = true;
+                    IniciarDrone();
+                }
 
-            // se saiu das salas do drone, garante que fica desligado
-            if (idx_area_atual != 1 && idx_area_atual != 2) {
-                drone_ativo = false;
+                // se saiu das salas do drone, garante que fica desligado
+                if (idx_area_atual != 1 && idx_area_atual != 2) {
+                    drone_ativo = false;
+                }
             }
         }
     }
@@ -131,16 +133,17 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
     if(jogador->posicao.x < 0){
         jogador->posicao.x = 0;
     }
-    if(jogador->posicao.x > LARGURA_TELA - 180 && (idx_area_atual == 4)){
-        jogador->posicao.x = LARGURA_TELA - 180;
+    if((jogador->posicao.x > LARGURA_TELA - 100  && !TodosInimigosMortos()) || (idx_area_atual >= 4)){
+        jogador->posicao.x = LARGURA_TELA - 100;
     }
 
-    //edicao do volume no meio do jogo (substitui um pause)
-    if(IsKeyPressed(KEY_V)){  
-        estado_anterior = ESTADO_FASE_1; //salva o estado anterior
-        *estado = ESTADO_VOLUME;
-        TocarSom(SOM_MENU_SELECT);
-    }
+        //edicao do volume no meio do jogo (substitui um pause)
+        if(IsKeyPressed(KEY_V)){  
+            estado_anterior = ESTADO_FASE_1; //salva o estado anterior
+            *estado = ESTADO_VOLUME;
+            TocarSom(SOM_MENU_SELECT);
+        }
+    
 }
 
 void Desenhar_Intro_Fase1(){

@@ -120,8 +120,6 @@ static void DesenharTirosDrone(){
 void IniciarDrone() {
     sprite_drone = LoadTexture("assets/sprites/inimigos/drone.png");
 
- 
-
     pos_drone = (Vector2){1800, 120};  
     estado_drone = 0;
 
@@ -196,7 +194,7 @@ static void TomarDanoDrone() {
 
     if(vida_drone <= 0){
         TocarSom(SOM_INIMIGO_2);
-        SpawnarBaterias(pos_drone, 1);
+        SpawnarBaterias(pos_drone, 10);
         drone_ativo = false;
     }
 }

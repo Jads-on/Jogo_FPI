@@ -1,6 +1,8 @@
 #include "raylib.h"
 #include "jogador.h"
 #include "tiros.h"
+#include "inimigos.h"
+#include "drone.h"
 #include "gameover.h"
 
 static const char *itens[] = {"Reiniciar", "Menu Principal", "Sair"};
@@ -51,7 +53,10 @@ void Atualizar_GameOver(Estados_Jogo *estado, Jogador *jogador) {
                
                 IniciarJogador(jogador, (Vector2){100, 600});
                 IniciarTiros();
+                IniciarBaterias();
+                IniciarInimigos();
                 
+            
                 *estado = ESTADO_FASE_1;
                 break;
             case 1: // Menu

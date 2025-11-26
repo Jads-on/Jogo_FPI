@@ -12,6 +12,7 @@
         "gestor_fases.h": "c",
         "historia.h": "c",
         "inimigos.h": "c",
-        "stdbool.h": "c"
+        "stdbool.h": "c",
+        "stdio.h": "c"
     }
 }
