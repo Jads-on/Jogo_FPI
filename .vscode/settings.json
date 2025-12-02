@@ -13,6 +13,7 @@
         "historia.h": "c",
         "inimigos.h": "c",
         "stdbool.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "boss.h": "c"
     }
 }

@@ -4,15 +4,15 @@
 #include "raylib.h"
 
 typedef enum{ //controle dos tipos de tiro do boss (CASO ELE ATIRE)
-    BOSS_INTRO,     // Animação de entrada
-    BOSS_IDLE,      // Esperando para atacar (vulnerável)
-    BOSS_ATK_TIRO,  
-    BOSS_ATK_DASH,  
-    BOSS_ATK_BOMBA,
-    BOSS_MORTO      
+    BOSS_INTRO = 0,     // Animação de entrada
+    BOSS_IDLE = 1,      // Esperando para atacar (vulnerável)
+    BOSS_ATK_TIRO = 2,  
+    BOSS_ATK_DASH = 3,  
+    BOSS_ATK_BOMBA = 4,
+    BOSS_MORTO = 5     
 }Estado_Boss;
 
-typedef struct{
+typedef struct Animacoes{
     int frame_atual_corpo,
         qtd_frames,
         direcao;
@@ -25,7 +25,7 @@ typedef struct{
          parado,
          morto,
          tem_chao;
-}Animacoes;
+} animacoes;
 
 typedef struct{
     int vida,
@@ -43,14 +43,14 @@ typedef struct{
             alvo;
 
     Rectangle hitbox;
-    Animacoes animacoes;
+    struct Animacoes animacoes;
     Estado_Boss estado;
 
 }Boss;
 
 void Iniciar_Boss(Boss *boss, Vector2 Posicao_Inicial_Boss);
 
-void Atualizar_Boss(Boss *boss, Vector2 Posicao_Jogador);
+void Atualizar_Boss(Boss *boss, Vector2 Posicao_Jogador, float delta);
 
 void Boss_Imagem(Boss boss);
 

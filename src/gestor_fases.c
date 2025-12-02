@@ -3,10 +3,12 @@
 #include "gestor_fases.h"
 #include "menu.h"
 #include "fase_1.h"
+#include "fase_2.h"
 #include "gameover.h"
 #include "creditos.h"
 #include "historia.h"
 #include "gestor_audio.h"
+#include "boss.h"
 
 Estados_Jogo estado_anterior; 
 
@@ -33,11 +35,12 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
 
     case ESTADO_INICIAR_FASE_2:
         Descarregar_Fase_1();
-        //Iniciar_Fase_2(estado); <-criar função
+        Iniciar_Fase_2(estado);
         break;
 
     case ESTADO_FASE_2:
-        //Atualizar_Fase_2(estado, jogador);
+        Boss boss;
+        Atualizar_Fase_2(estado, jogador, boss);
         break;
     
     case ESTADO_GAMEOVER:

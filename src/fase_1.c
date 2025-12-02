@@ -10,15 +10,15 @@
 #include <stdbool.h>
 
 #define QTD_TELAS 5
-#define LARGURA_TELA 1920
-#define ALTURA_TELA 1080
+int LarguraTela;
+int AlturaTela; 
 
 //saida da fase
 #define INICIO_SAIDA 900
 #define FIM_SAIDA 1000
 
 //timer da intro
-#define DURACAO_MENSAGEM_FASE 7.0f        // 5 segundos para o título sumir
+#define DURACAO_MENSAGEM_FASE 7.0f        
 
 extern Estados_Jogo estado_anterior; // extern para ser usado em outras fontes  
 
@@ -28,7 +28,8 @@ static Texture2D mapa[QTD_TELAS];
 int idx_area_atual = 0;
 
 void Iniciar_Fase_1(Estados_Jogo *estado){// careega o mapa e os inimigos
-
+    LarguraTela = GetScreenWidth();
+    AlturaTela = GetScreenHeight();
     //carrega o mapa
     mapa[0] = LoadTexture("assets/sprites/mapas/Fase_1/area_1.png");
     mapa[1] = LoadTexture("assets/sprites/mapas/Fase_1/area_2.png");
@@ -60,7 +61,7 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
     AtualizarTiros();
 
     // --- coisas novas da main ---
-    AtualizarBalasInimigos(delta, LARGURA_TELA, ALTURA_TELA);
+    AtualizarBalasInimigos(delta, LarguraTela, AlturaTela);
     AtualizarInimigos(delta, jogador->posicao);
     ColisaoBalaBateria(jogador);          
     ColisaoBalaInimigo();
@@ -84,7 +85,7 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
 
     //transição entre areas
     if(TodosInimigosMortos()){
-        if(jogador->posicao.x > LARGURA_TELA){
+        if(jogador->posicao.x > LarguraTela){
             CarregarInimigosDaTela(idx_area_atual);
 
             if(idx_area_atual < 4){
@@ -133,8 +134,8 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
     if(jogador->posicao.x < 0){
         jogador->posicao.x = 0;
     }
-    if((jogador->posicao.x > LARGURA_TELA - 100  && !TodosInimigosMortos()) || (idx_area_atual >= 4)){
-        jogador->posicao.x = LARGURA_TELA - 100;
+    if((jogador->posicao.x > LarguraTela - 100  && !TodosInimigosMortos()) || (idx_area_atual > 4)){
+        jogador->posicao.x = LarguraTela - 100;
     }
 
         //edicao do volume no meio do jogo (substitui um pause)
@@ -207,10 +208,15 @@ void DesenharFase1(Jogador jogador){
     //Tiros
     Tiro_Imagem_Jogador();
     DesenharBalasInimigos();
-
-    DrawText(TextFormat("AREA: %d", idx_area_atual), 20, 20, 30, RED);
 }
 
 void Descarregar_Fase_1(){
-    UnloadTexture(mapa[0]);
+
+    DescarregarTexturasInimigos();
+    Descarregar_Drone();
+    
+    for(int i = 0; i < QTD_TELAS; i++){
+        UnloadTexture(mapa[i]);
+    }
+
 }

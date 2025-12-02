@@ -354,3 +354,7 @@ void DesenharDrone() {
     // debug opcional
     // DrawRectangleLinesEx(hitbox_drone, 2, RED);
 }
+
+void Descarregar_Drone(){
+    UnloadTexture(sprite_drone);
+}

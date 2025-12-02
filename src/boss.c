@@ -32,6 +32,8 @@ void Iniciar_Boss(Boss *boss,  Vector2 Posicao_Inicial_Boss){
     boss->animacoes.morto = false;
 
     //Hitbox boss e alvo
+    boss->posicao.x = Posicao_Inicial_Boss.x;
+    boss->posicao.y = Posicao_Inicial_Boss.y; 
     boss->hitbox = (Rectangle){boss->posicao.x, boss->posicao.y, 200, 200};
     boss->alvo = (Vector2){0, 0}; //Quando for atacar o jogador salve a posição dele aqui
 
@@ -89,7 +91,7 @@ void Atualizar_Boss(Boss *boss, Vector2 Posicao_Jogador, float delta){
 
     //Comportamento do boss
     if(boss->ativo){
-        switch (boss->estado) {
+        switch(boss->estado) {
             
             // --- ESTADO 1: PENSANDO (IDLE) ---
             case BOSS_IDLE:

@@ -10,5 +10,6 @@ extern bool drone_ativo;
 void IniciarDrone();
 void AtualizarDrone(Jogador *jogador);
 void DesenharDrone();
+void Descarregar_Drone();
 
 #endif
