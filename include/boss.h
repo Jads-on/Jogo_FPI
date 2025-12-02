@@ -22,7 +22,7 @@ typedef struct{
           
     bool andando,
          atirando,
-         pulando,
+         parado,
          morto,
          tem_chao;
 }Animacoes;
@@ -30,7 +30,8 @@ typedef struct{
 typedef struct{
     int vida,
     velocidade,
-    ultimo_ataque;
+    ultimo_ataque,
+    progressao;
 
     bool ativo,
          fase_2;
@@ -48,6 +49,9 @@ typedef struct{
 }Boss;
 
 void Iniciar_Boss(Boss *boss, Vector2 Posicao_Inicial_Boss);
+
 void Atualizar_Boss(Boss *boss, Vector2 Posicao_Jogador);
+
+void Boss_Imagem(Boss boss);
 
 #endif 
