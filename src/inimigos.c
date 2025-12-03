@@ -84,9 +84,6 @@ void AtirarNoJogador(Vector2 posicaoOrigem, Vector2 posicaoAlvo) {
     }
 }
 
-void DescarregarTexturasInimigos(void) {
-    UnloadTexture(texturaInimigo);
-}
 
 void SpawnarInimigoEm(Vector2 posicao) {
     for (int i = 0; i < MAX_INIMIGOS; i++) {
@@ -118,18 +115,21 @@ void CarregarInimigosDaTela(int indiceTela) {
     
     // Level Design
     switch (indiceTela) {
-        case 0: 
+        case 1: 
             SpawnarInimigoEm((Vector2){1170, 455}); 
             SpawnarInimigoEm((Vector2){270, 103}); 
-            break;
-        case 1: 
-            SpawnarInimigoEm((Vector2){770, -5}); 
-            
-            break;
+        break;
+
         case 2: 
+            SpawnarInimigoEm((Vector2){770, -5}); 
+        break;
+
+        case 3: 
             SpawnarInimigoEm((Vector2){1300, 490});
-            break;
-        default: break;
+        break;
+
+        default: 
+        break;
     }
 }
 
@@ -137,7 +137,7 @@ void AtualizarInimigos(float delta, Vector2 posicaoJogador) {
     for (int i = 0; i < MAX_INIMIGOS; i++) {
         if (spiderlith[i].ativo) {
             spiderlith[i].hitbox.x = spiderlith[i].pos.x;
-             spiderlith[i].hitbox.y = spiderlith[i].pos.y - 50;
+            spiderlith[i].hitbox.y = spiderlith[i].pos.y - 50;
             // Animação
             spiderlith[i].tempoFrame += delta;
             if (spiderlith[i].tempoFrame >= VELOCIDADE_FRAME) {
@@ -179,60 +179,73 @@ void AtualizarBalasInimigos(float delta, int larguraTela, int alturaTela) {
             // 2. Sincronizar Hitbox com a nova Posição
             balasInimigos[i].hitbox.x = balasInimigos[i].posicao.x - 5;
             balasInimigos[i].hitbox.y = balasInimigos[i].posicao.y + 10;
-
+            
             // 3. Remover se sair da tela
             if (balasInimigos[i].posicao.x < -20 || balasInimigos[i].posicao.x > larguraTela + 20 ||
                 balasInimigos[i].posicao.y < -20 || balasInimigos[i].posicao.y > alturaTela + 20) {
-                balasInimigos[i].ativo = false;
+                    balasInimigos[i].ativo = false;
+                }
             }
         }
     }
-}
-
-void DesenharInimigos(void) {
-    for (int i = 0; i < MAX_INIMIGOS; i++) {
-        if (spiderlith[i].ativo) {
-            Vector2 posicao_desenho = { spiderlith[i].pos.x - 25, spiderlith[i].pos.y - 50};
-
-            DrawTextureRec(texturaInimigo, frame_inimigo[idx_frame_spiderlith_atual], posicao_desenho, WHITE);
-            //Debug da hitbox do inimigo -> DrawRectangle(spiderlith[i].hitbox.x, spiderlith[i].hitbox.y, spiderlith[i].hitbox.width, spiderlith[i].hitbox.height, BLACK);
+    
+    void DesenharInimigos(void) {
+        for (int i = 0; i < MAX_INIMIGOS; i++) {
+            if (spiderlith[i].ativo) {
+                Vector2 posicao_desenho = { spiderlith[i].pos.x - 25, spiderlith[i].pos.y - 50};
+                
+                DrawTextureRec(texturaInimigo, frame_inimigo[idx_frame_spiderlith_atual], posicao_desenho, WHITE);
+                //Debug da hitbox do inimigo -> DrawRectangle(spiderlith[i].hitbox.x, spiderlith[i].hitbox.y, spiderlith[i].hitbox.width, spiderlith[i].hitbox.height, BLACK);
+            }
         }
     }
-}
-
-void DesenharBalasInimigos(void) {
-    for (int i = 0; i < MAX_BALAS_INIMIGOS; i++) {
-        if (balasInimigos[i].ativo) {
-            
-            // Usando DrawTexturePro para aproveitar o 'angulo' da bala
-            Vector2 source = {20, 10};
-            Rectangle dest = { 
-                balasInimigos[i].posicao.x + 10, // Ajuste fino para centro (+5 se a bala for 10x10)
-                balasInimigos[i].posicao.y + 15, 
-                20,
-                10
-            };
-            
-            DrawRectanglePro(dest, source, balasInimigos[i].angulo, RED);
-            /* Debug da hitbox do tiro do inimigo -> DrawRectangle(
-                (int)balasInimigos[i].hitbox.x,
-                (int)balasInimigos[i].hitbox.y,
-                (int)balasInimigos[i].hitbox.width,
-                (int)balasInimigos[i].hitbox.height,
-                BLACK
-            );*/
-            
+    
+    void DesenharBalasInimigos(void) {
+        for (int i = 0; i < MAX_BALAS_INIMIGOS; i++) {
+            if (balasInimigos[i].ativo) {
+                
+                // Usando DrawTexturePro para aproveitar o 'angulo' da bala
+                Vector2 source = {20, 10};
+                Rectangle dest = { 
+                    balasInimigos[i].posicao.x + 10, // Ajuste fino para centro (+5 se a bala for 10x10)
+                    balasInimigos[i].posicao.y + 15, 
+                    20,
+                    10
+                };
+                
+                DrawRectanglePro(dest, source, balasInimigos[i].angulo, RED);
+                /* Debug da hitbox do tiro do inimigo -> DrawRectangle(
+                    (int)balasInimigos[i].hitbox.x,
+                    (int)balasInimigos[i].hitbox.y,
+                    (int)balasInimigos[i].hitbox.width,
+                    (int)balasInimigos[i].hitbox.height,
+                    BLACK
+                    );*/
+                    
+                }
+            }
         }
-    }
-}
-
-bool TodosInimigosMortos(void) {
-    for (int i = 0; i < MAX_INIMIGOS; i++) {
-        // Se encontrar UM inimigo ativo, retorna falso (não matou todos)
-        if (spiderlith[i].ativo || drone_ativo) {
-            return false; 
-        }
-    }
-    // Se o loop acabou e não achou ninguém ativo, retorna verdadeiro
+        
+        bool TodosInimigosMortos(void) {
+            for (int i = 0; i < MAX_INIMIGOS; i++) {
+                // Se encontrar UM inimigo ativo, retorna falso (não matou todos)
+                if (spiderlith[i].ativo || drone_ativo) {
+                    return false; 
+                }
+            }
+            // Se o loop acabou e não achou ninguém ativo, retorna verdadeiro
     return true; 
+}
+
+void DescarregarTexturasInimigos(void){
+    UnloadTexture(texturaInimigo);
+}
+
+void Desativar_Inimigos(){
+     //Se sobrar algum inimigo, desativa
+    for (int i = 0; i < MAX_INIMIGOS; i++){
+        if(spiderlith[i].ativo){
+            spiderlith[i].ativo = false;
+        }
+    }
 }

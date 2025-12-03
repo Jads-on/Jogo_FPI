@@ -50,6 +50,7 @@ void ColisaoBalaBateria(Jogador *jogador){
                     if (CheckCollisionRecs(balas[bala].hitbox, baterias_dropadas[bateria].hitbox)){
 
                         jogador->baterias += baterias_dropadas[bateria].valor; //se a bala acera a bateria o jogador coleta
+                        jogador->total_baterias += baterias_dropadas[bateria].valor; //adiciona ao total de baterias coletadas
                         baterias_dropadas[bateria].ativo = false;
 
                         //timer da explosão
@@ -122,7 +123,7 @@ void ColisaoBalaInimigoJogador(Jogador *jogador){
                 
                 // 1. Dano ao Jogador
                 jogador->vida -= balasInimigos[i].dano;
-                TocarSom(SOM_DANO_JOGADOR); // Se tiver no gestor_audio
+                TocarSom(SOM_DANO_JOGADOR); 
 
                 // 2. Bala do inimigo é destruída
                 balasInimigos[i].ativo = false;

@@ -30,9 +30,9 @@ void Iniciar_Gestor_Audio(){
                 gestor_de_audio.musica_tocando = false;
             
             //sons
-                gestor_de_audio.volume_sons = 0.5f;
+                gestor_de_audio.volume_sons = 0.4f;
                 gestor_de_audio.mutado_sons = false;
-                gestor_de_audio.volume_anterior_sons = 0.5f;
+                gestor_de_audio.volume_anterior_sons = 0.4f;
 
         //Carrega as musicas
             CarregarMusica(MUSICA_MENU, "assets/musicas/(Menu)Punch_Deck-Music_To_Wear_Fingerless_Gloves_To.mp3");

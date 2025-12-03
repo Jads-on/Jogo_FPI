@@ -6,33 +6,41 @@
 #include "gestor_fases.h"
 #include "gestor_audio.h"
 #include "boss.h"
+#include "fase_2.h"
 
-#define ALTURA_CHAO 800
+#define ALTURA_CHAO 370
+#define LIMITE_MAPA_DIREITA 1270
+#define LIMITE_MAPA_ESQUERDA 250
 
 extern Estados_Jogo estado_anterior; // extern para ser usado em outras fontes 
 
-//Variavies do tamanho da tela (torna o tamanho padrao)
-int Largura_Tela, Altura_Tela;
+//timer da intro
+#define DURACAO_MENSAGEM_FASE 5.0f     
+static float timer_mensagem_fase = 0.0f;
 
 Boss juggernaut;
 Texture2D mapa;
 
 void Iniciar_Fase_2(Estados_Jogo *estado){
-    Largura_Tela = GetScreenWidth();
-    Altura_Tela = GetScreenHeight();
-
-    Vector2 posicao_inicial_boss = (Vector2){ALTURA_CHAO, Altura_Tela/2};
+    Vector2 posicao_inicial_boss = (Vector2){LARGURA_TELA/2, ALTURA_CHAO};
 
     Iniciar_Boss(&juggernaut, posicao_inicial_boss);
 
     mapa = LoadTexture("assets/sprites/mapas/Fase_2/base_dos_lammers.png");
-    *estado = ESTADO_FASE_2;
+    timer_mensagem_fase = 0.0f;
+    if(IsKeyPressed(KEY_ENTER)){
+        *estado = ESTADO_FASE_2;
+    }
 }
 
-void Atualizar_Fase_2(Estados_Jogo *estado, Jogador *jogador, Boss boss){
+void Atualizar_Fase_2(Estados_Jogo *estado, Jogador *jogador){
+
+    if (timer_mensagem_fase < DURACAO_MENSAGEM_FASE) {
+        timer_mensagem_fase += GetFrameTime();
+    }
 
     JogadorUpdate(jogador);
-    Atualizar_Boss(&boss, jogador->posicao, 1.0);
+    Atualizar_Boss(&juggernaut, jogador->posicao, 1.0);
     AtualizarTiros();
     ColisaoBalaBateria(jogador);
 
@@ -44,8 +52,8 @@ void Atualizar_Fase_2(Estados_Jogo *estado, Jogador *jogador, Boss boss){
      if(jogador->posicao.x < 0){
         jogador->posicao.x = 0;
     }
-    if((jogador->posicao.x > Largura_Tela - 100  && !TodosInimigosMortos())){
-        jogador->posicao.x = Largura_Tela - 100;
+    if((jogador->posicao.x > LARGURA_TELA - 100  && !TodosInimigosMortos())){
+        jogador->posicao.x = LARGURA_TELA - 100;
     }
 
     //edicao do volume no meio do jogo (substitui um pause)
@@ -54,17 +62,43 @@ void Atualizar_Fase_2(Estados_Jogo *estado, Jogador *jogador, Boss boss){
         *estado = ESTADO_VOLUME;
         TocarSom(SOM_MENU_SELECT);
     }
-    
-
-
 }
 
-void DesenharFase2(Jogador jogador, Boss boss){
+// ============================= DESENHO ======================================
+
+void Desenhar_Mensagem_Fase_2(){
+    if (timer_mensagem_fase >= DURACAO_MENSAGEM_FASE) {
+        return; // Sai da função se o tempo acabou
+    }
+
+    //Fade Out (Efeito de esvanecer)
+    float progresso = timer_mensagem_fase / DURACAO_MENSAGEM_FASE; // Vai de 0.0 a 1.0
+    float alpha = 1.0f; //Opacidade total
+
+    if (progresso > 0.7f) {
+        alpha = 1.0f - ((progresso - 0.7f) / 0.3f);
+    }
+
+    // Cor do texto
+    Color cor_texto = Fade(WHITE, alpha); 
+
+    DrawRectangle(0, 80, GetScreenWidth(), 180, Fade(BLACK, 0.6f * alpha)); 
+
+    DrawText("Fase 2: Base Lammer", 
+             GetScreenWidth() / 2 - MeasureText("Fase 2: Base Lammer", 60) / 2, 
+             100, 60, cor_texto);
+
+    DrawText("Objetivo: Destrua o autômato Juggernaut", 
+             GetScreenWidth() / 2 - MeasureText("Objetivo: Destrua o autômato Juggernaut", 45) / 2, 
+             170, 45, cor_texto);
+}
+
+void DesenharFase2(Jogador jogador){
     DrawTexture(mapa, 0, 0, WHITE);
 
     // Desenho do Jogador
     JogadorImagem(jogador);
-    Boss_Imagem(boss);
+    Boss_Imagem(juggernaut);
 
     //Assets
     DesenharBaterias();
@@ -77,6 +111,5 @@ void DesenharFase2(Jogador jogador, Boss boss){
 }
 
 void Descarregar_Fase_2(){
-
     UnloadTexture(mapa);
 }

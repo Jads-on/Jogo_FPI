@@ -1,17 +1,13 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-#include <menu.h>
 #include "raylib.h"
 #include "raymath.h"
-#include "jogador.h"
-#include "tiros.h"
 #include "fases_estados.h"
 #include "gestor_fases.h"
 #include "menu.h"
 #include "historia.h"
 #include "creditos.h"
 #include "gestor_audio.h"
+#include "jogador.h"
+#include "tiros.h"
 #include "baterias.h"
 #include "inimigos.h"
 
@@ -87,7 +83,6 @@ int main(void){
 
     EndDrawing();
 }
-
 
     //encerramento
     Encerrar_Menu();

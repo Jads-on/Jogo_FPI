@@ -39,8 +39,7 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
         break;
 
     case ESTADO_FASE_2:
-        Boss boss;
-        Atualizar_Fase_2(estado, jogador, boss);
+        Atualizar_Fase_2(estado, jogador);
         break;
     
     case ESTADO_GAMEOVER:
@@ -87,8 +86,13 @@ void Desenhar_Jogo(Estados_Jogo estado, Jogador jogador){
         Desenhar_Mensagem_Fase_1();
         break;
 
+    case ESTADO_INICIAR_FASE_2:
+        Desenhar_Encerramento_Fase_1();
+        break;
+
     case ESTADO_FASE_2:
-        //DesenharFase2(jogador);
+        DesenharFase2(jogador);
+        Desenhar_Mensagem_Fase_2();
         break;
 
     case ESTADO_GAMEOVER:

@@ -57,7 +57,7 @@ void Atualizar_GameOver(Estados_Jogo *estado, Jogador *jogador) {
                 IniciarInimigos();
                 
             
-                *estado = ESTADO_FASE_1;
+                *estado = ESTADO_INTRO_FASE_1;
                 break;
             case 1: // Menu
         
@@ -103,19 +103,10 @@ void Desenhar_GameOver(Jogador *jogador) {
     DrawTextureRec(sprite_jogador_corpo, jogador_morto[frame_atual_morte], pos_morte, Fade(WHITE, fade));
     
     // estatisticas
-    int estatisticas = 500;
-    
-    DrawText("", 
-             GetScreenWidth()/2 - 200, estatisticas - 20, 20, 
-             Fade(DARKGRAY, fade));
-    
+   
     DrawText(TextFormat("Baterias Coletadas: %d", jogador->total_baterias), 
-             GetScreenWidth()/2 - 180, estatisticas + 10, 28, 
+             GetScreenWidth()/2 - 180, 510, 28, 
              Fade(SKYBLUE, fade));
-    
-    DrawText("", 
-             GetScreenWidth()/2 - 200, estatisticas + 90, 20, 
-             Fade(DARKGRAY, fade));
     
     // Menu
     int fs = 42;

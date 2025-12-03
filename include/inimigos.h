@@ -45,4 +45,6 @@ void DesenharDrone();
 
 bool TodosInimigosMortos();
 
+void Desativar_Inimigos();
+
 #endif

@@ -9,7 +9,7 @@
 #define DISTANCIA_ROTACAO 110 //reduz a area do centro de rotacao 
 #define VELOCIDADE_JOGADOR 500
 #define VIDA_JOGADOR 100
-#define ALTURA_PULO -2500.0
+#define ALTURA_PULO -1800.0
 #define DURACAO_ENERGETICO 5.0  //duracao do efeito do energetico
 #define AUMENTO_DE_VELOCIDADE 2.0 //escolha o multiplo de aumento de velocidade (2.0x, 3.0x, etc)
 #define RECUPERACAO_ENERGETICO 20 //recupera um pouco da vida apos tomar
@@ -39,8 +39,8 @@
 #define DESLOCAMENTO_TIRO_Y -9
 
 //fisica
-#define GRAVIDADE 7000.0
-#define ALTURA_CHAO 850.0
+#define GRAVIDADE 4500.0
+#define ALTURA_CHAO 870.0
 
 // Parametros das imagens usadas no hud 
 static Texture2D sprite_barras,

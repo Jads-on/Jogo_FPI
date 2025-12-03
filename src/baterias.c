@@ -68,3 +68,13 @@ void SpawnarBaterias(Vector2 posicao, int valor){
 void DescarregarBateria(){
     UnloadTexture(frame_bateria);
 }
+
+void Desativar_Baterias(){
+
+    //caso o jogador passe sem coletar as baterias
+    for(int i = 0; i < MAX_BATERIAS; i++) {
+        if(baterias_dropadas[i].ativo) {
+            baterias_dropadas[i].ativo = false;
+        }
+    }
+}

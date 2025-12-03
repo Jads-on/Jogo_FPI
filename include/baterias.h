@@ -26,4 +26,6 @@ void DesenharBaterias();
 
 void DescarregarBateria();
 
+void Desativar_Baterias();
+
 #endif

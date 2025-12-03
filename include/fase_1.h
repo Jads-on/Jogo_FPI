@@ -16,6 +16,8 @@ void Desenhar_Mensagem_Fase_1();
 
 void DesenharFase1(Jogador Jogador);
 
+void Desenhar_Encerramento_Fase_1();
+
 void Descarregar_Fase_1();
 
 #endif

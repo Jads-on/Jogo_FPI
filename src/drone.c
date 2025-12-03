@@ -13,9 +13,9 @@
 #define LARGURA_LASER 30
 #define COR_LASER Fade(RED, 0.7f)
 
-// dano do drone 1 em 1
-#define DANO_LASER 1
-#define DANO_TIRO_DRONE 1
+// dano do drone
+#define DANO_LASER 50
+#define DANO_TIRO_DRONE 5
 
 #define DRONE_SCALE 2.0f
 
@@ -104,6 +104,7 @@ static void AtualizarTirosDrone(Jogador *jogador){
             if(CheckCollisionRecs(balas_drone[i].hitbox, jogador->hitbox)){
                 jogador->vida -= DANO_TIRO_DRONE;
                 balas_drone[i].ativo = false;
+                TocarSom(SOM_DANO_JOGADOR);
             }
         }
     }
@@ -164,6 +165,7 @@ static void LaserDrone(Jogador *jogador) {
 
     if (CheckCollisionRecs(jogador->hitbox, laser_hitbox)) {
         jogador->vida -= DANO_LASER;
+        TocarSom(SOM_DANO_JOGADOR);
     }
 }
 
@@ -321,7 +323,6 @@ void AtualizarDrone(Jogador *jogador) {
             }
         } break;
     }
-
     AtualizarTirosDrone(jogador);
 }
 
@@ -357,4 +358,8 @@ void DesenharDrone() {
 
 void Descarregar_Drone(){
     UnloadTexture(sprite_drone);
+}
+
+void Desativar_Drone(){
+    drone_ativo = false;
 }

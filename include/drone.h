@@ -11,5 +11,6 @@ void IniciarDrone();
 void AtualizarDrone(Jogador *jogador);
 void DesenharDrone();
 void Descarregar_Drone();
+void Desativar_Drone();
 
 #endif
