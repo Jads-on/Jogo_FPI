@@ -38,6 +38,7 @@ void Iniciar_Gestor_Audio(){
             CarregarMusica(MUSICA_MENU, "assets/musicas/(Menu)Punch_Deck-Music_To_Wear_Fingerless_Gloves_To.mp3");
              CarregarMusica(MUSICA_FASE_1, "assets/musicas/(Fase_1)Carpenter_Brut-Turbo_Killer.mp3");
               CarregarMusica(MUSICA_ENCERRAMENTO, "assets/musicas/encerramento.mp3");
+               CarregarMusica(MUSICA_FASE_2, "assets/musicas/(Fase_2)Carpenter Brut - Wake up the President.mp3");
          
         
 
@@ -58,6 +59,7 @@ void Iniciar_Gestor_Audio(){
                          CarregarSom(SOM_TROCA_MUNICAO, "assets/sons/troca_municao.mp3");
                           CarregarSom(SOM_VIDA_BAIXA, "assets/sons/vida_baixa.mp3");
                            CarregarSom(SOM_PULO, "assets/sons/pulo.mp3");
+                            CarregarSom(SOM_MISSAO_COMPLETA, "assets/sons/mission-complete.mp3");
                     
         audio_iniciado = true;
     }

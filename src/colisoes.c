@@ -51,6 +51,7 @@ void ColisaoBalaBateria(Jogador *jogador){
 
                         jogador->baterias += baterias_dropadas[bateria].valor; //se a bala acera a bateria o jogador coleta
                         jogador->total_baterias += baterias_dropadas[bateria].valor; //adiciona ao total de baterias coletadas
+                        TocarSom(SOM_COLETA_BATERIA);
                         baterias_dropadas[bateria].ativo = false;
 
                         //timer da explosão

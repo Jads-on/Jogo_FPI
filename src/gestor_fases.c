@@ -34,11 +34,11 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
         break;
 
     case ESTADO_INICIAR_FASE_2:
-        Descarregar_Fase_1();
         Iniciar_Fase_2(estado);
         break;
 
     case ESTADO_FASE_2:
+        Descarregar_Fase_1();
         Atualizar_Fase_2(estado, jogador);
         break;
     

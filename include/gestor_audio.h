@@ -43,6 +43,7 @@ typedef enum{
     SOM_TIRO,
     SOM_TROCA_MUNICAO,
     SOM_VIDA_BAIXA,
+    SOM_MISSAO_COMPLETA,
     TOTAL_SONS,
 
 }Tipo_Som;

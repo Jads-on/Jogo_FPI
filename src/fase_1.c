@@ -8,8 +8,12 @@
 #include "drone.h"
 #include "fase_1.h"
 
-#define QTD_TELAS 5
+#define QTD_TELAS 6
 #define ALTURA_CHAO 850.0
+#define LARGURA_FRAME_MAPA 1920
+#define ALTURA_FRAME_MAPA 1097
+#define QTD_LINHAS_SPRITE_MAPA 3
+#define QTD_COLUNAS_SPRITE_MAPA 2
 
 //saida da fase
 #define INICIO_SAIDA 900
@@ -20,22 +24,43 @@
 
 extern Estados_Jogo estado_anterior; // extern para ser usado em outras fontes  
 
+//Controle do mapa
+static Texture2D textura_mapa;
+static Rectangle frame_mapa[QTD_TELAS];   
+static Vector2 Posicao_Mapa;   
+int idx_area_atual = 0;
+
+//flags
 static bool drone_spawnou[QTD_TELAS] = { false, false, false, false, false };
 static bool tocou_som_vida_baixa = false;
 static float timer_mensagem_fase = 0.0f,
-             fade = 0.0f; ; 
-static Texture2D mapa[QTD_TELAS],
-                 tela_encerramento;      
-int idx_area_atual = 0;
+             fade = 0.0f; 
 
 void Iniciar_Fase_1(Estados_Jogo *estado){// careega o mapa e os inimigos
+
     //carrega o mapa
-    mapa[0] = LoadTexture("assets/sprites/mapas/Fase_1/area_1.png");
-    mapa[1] = LoadTexture("assets/sprites/mapas/Fase_1/area_2.png");
-    mapa[2] = LoadTexture("assets/sprites/mapas/Fase_1/area_3.png");
-    mapa[3] = LoadTexture("assets/sprites/mapas/Fase_1/area_4.png");
-    mapa[4] = LoadTexture("assets/sprites/mapas/Fase_1/area_5.png");
-    tela_encerramento = LoadTexture("assets/sprites/mapas/Fase_1/fase1_concluida.png");
+    textura_mapa = LoadTexture("assets/sprites/mapas/Fase_1/mapa_fase_1.png");
+    Posicao_Mapa = (Vector2){0,0};
+
+   int idx = 0;
+    
+    for(int linha = 0; linha < QTD_LINHAS_SPRITE_MAPA; linha++){
+        
+        for(int coluna = 0; coluna < QTD_COLUNAS_SPRITE_MAPA; coluna++){
+            
+            frame_mapa[idx] = (Rectangle){
+                (float)(coluna * LARGURA_FRAME_MAPA), // X calcula pela coluna
+                (float)(linha * ALTURA_FRAME_MAPA),   // Y calcula pela linha
+                (float)LARGURA_FRAME_MAPA, 
+                (float)ALTURA_FRAME_MAPA
+            };
+
+            
+            idx++; 
+        }
+    }
+    
+
     fade = 0.0f;
 
     *estado = ESTADO_INTRO_FASE_1; //ao finalizar segue para a fase 1
@@ -99,6 +124,7 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
     //detecta que chegou ao final da fase
     if(idx_area_atual == 4){
         if((jogador->hitbox.x >= INICIO_SAIDA) &&(jogador->hitbox.x <= FIM_SAIDA)){
+            TocarSom(SOM_MISSAO_COMPLETA);
             *estado = ESTADO_INICIAR_FASE_2;
         }
     }
@@ -174,7 +200,7 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
 // ============================= DESENHO ======================================
 
 void Desenhar_Intro_Fase1(){
-    DrawTexture(mapa[4], 0, 0, WHITE);
+    DrawTextureRec(textura_mapa, frame_mapa[4],Posicao_Mapa, WHITE);
 
     //Menu de instruções
     DrawText("Instruções:", 100, 50, 80, WHITE);
@@ -185,13 +211,13 @@ void Desenhar_Intro_Fase1(){
 }
 
 void Desenhar_Encerramento_Fase_1(){
-    
+
+    DrawTextureRec(textura_mapa, frame_mapa[5], Posicao_Mapa, WHITE);
+
     // Aumenta a opacidade aos poucos até chegar em 1.0 (100% visível)
     if (fade < 1.0f) {
         fade += GetFrameTime(); 
     }
-
-    DrawTexture(tela_encerramento ,0 ,0 ,WHITE);
 
     // --- TEXTO PRINCIPAL ---
     const char* texto_principal = "- MISSÃO CONCLUIDA -";
@@ -258,7 +284,7 @@ void Desenhar_Mensagem_Fase_1() {
 }
 
 void DesenharFase1(Jogador jogador){
-    DrawTexture(mapa[idx_area_atual], 0, 0, WHITE);
+    DrawTextureRec(textura_mapa, frame_mapa[idx_area_atual], Posicao_Mapa, WHITE);
 
     // Desenho do Jogador
     JogadorImagem(jogador);
@@ -288,9 +314,7 @@ void Descarregar_Fase_1(){
     Desativar_Baterias();
     Desativar_Inimigos();
     Desativar_Drone();
+    UnloadTexture(textura_mapa);
     
-    for(int i = 0; i < QTD_TELAS; i++){
-        UnloadTexture(mapa[i]);
-    }
 
 }
