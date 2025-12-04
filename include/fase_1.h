@@ -10,6 +10,8 @@ void Atualizar_Intro_Fase_1(Estados_Jogo *estado);
 
 void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador);
 
+void Proxima_Fase(Estados_Jogo *estado);
+
 void Desenhar_Intro_Fase1();
 
 void Desenhar_Mensagem_Fase_1();

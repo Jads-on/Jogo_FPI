@@ -5,6 +5,7 @@
 #include "tiros.h"
 #include "gestor_audio.h"
 #include "baterias.h"
+#include "boss.h"
 
 #define RAIO_EXPLOSAO 100
 #define DURACAO_EXPLOSAO 0.2f
@@ -115,19 +116,30 @@ void ColisaoBalaInimigo(){
     }
 }
 
-void ColisaoBalaInimigoJogador(Jogador *jogador){
-    for(int i = 0; i < MAX_BALAS_INIMIGOS; i++){ // Balas dos INIMIGOS
-        if (balasInimigos[i].ativo) {
+void ColisaoBalaBoss(Boss boss){
+    for(int i = 0; i < MAX_BALAS; i++){ // Balas dos INIMIGOS
+        if (balas[i].ativo) {
             
             // Verifica colisão com a hitbox do jogador
-            if (CheckCollisionRecs(balasInimigos[i].hitbox, jogador->hitbox)){
+            if (CheckCollisionRecs(balas[i].hitbox, boss.hitbox)){
                 
                 // 1. Dano ao Jogador
-                jogador->vida -= balasInimigos[i].dano;
-                TocarSom(SOM_DANO_JOGADOR); 
+                boss.vida -= balas[i].dano;
+                
+                //timer da explosão
+                if (balas[i].tipo == Bala_Explosiva) {
 
-                // 2. Bala do inimigo é destruída
-                balasInimigos[i].ativo = false;
+                    balas[i].explodir = true; 
+                    balas[i].velocidade = 0;
+
+                    // FORÇA o timer para a duração da explosão 
+                    balas[i].tempo_explosao = DURACAO_EXPLOSAO; 
+                    Aplicar_Dano_em_Area(balas[i].posicao, 75, balas[i].dano);
+                           
+                } 
+                else if((balas[i].tipo != Bala_Perfurante) && boss.vida <= 150){ 
+                    balas[i].ativo = false; 
+                }
             }
         }
     }

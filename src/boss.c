@@ -44,7 +44,7 @@ void Iniciar_Boss(Boss *boss,  Vector2 Posicao_Inicial_Boss){
     //Hitbox boss e alvo
     boss->posicao.x = Posicao_Inicial_Boss.x;
     boss->posicao.y = Posicao_Inicial_Boss.y; 
-    boss->hitbox = (Rectangle){boss->posicao.x, boss->posicao.y, 200, 200};
+    boss->hitbox = (Rectangle){boss->posicao.x + 120, boss->posicao.y + 120, 150, 150};
     boss->alvo = (Vector2){0, 0}; //Quando for atacar o jogador salve a posição dele aqui
 
     //Insira abaixo o carregamento do spritesheet do boss
@@ -183,4 +183,5 @@ void Boss_Imagem(Boss boss){
     }
 
     DrawTextureRec(sprite_boss, frame_boss, boss.posicao, WHITE);
+    //Debug hitbox boss -> DrawRectangle(boss.hitbox.x,boss.hitbox.y, boss.hitbox.width, boss.hitbox.height, BLACK);
 }

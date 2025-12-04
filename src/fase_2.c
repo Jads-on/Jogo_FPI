@@ -28,9 +28,7 @@ void Iniciar_Fase_2(Estados_Jogo *estado){
 
     mapa = LoadTexture("assets/sprites/mapas/Fase_2/base_dos_lammers.png");
     timer_mensagem_fase = 0.0f;
-    if(IsKeyPressed(KEY_ENTER)){
-        *estado = ESTADO_FASE_2;
-    }
+    *estado = ESTADO_FASE_2;
 }
 
 void Atualizar_Fase_2(Estados_Jogo *estado, Jogador *jogador){
@@ -46,6 +44,7 @@ void Atualizar_Fase_2(Estados_Jogo *estado, Jogador *jogador){
 
     if(jogador->vida <= 0){
         TocarSom(SOM_MORTE_JOGADOR);
+        estado_anterior = ESTADO_INICIAR_FASE_2;
         *estado = ESTADO_GAMEOVER;
     }
 

@@ -35,6 +35,6 @@ void AtualizarTiros();
 
 void Tiro_Imagem_Jogador();
 
-void DesarregarExplosao();
+void Desativar_Tiros();
 
 #endif

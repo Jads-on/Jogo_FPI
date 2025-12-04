@@ -46,7 +46,7 @@ void Atualizar_Menu(Estados_Jogo *estado, Jogador *jogador) {
     if (IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
         estado_anterior = ESTADO_MENU; //salva o estado anterior
         switch (opcao) {
-            case 0: *estado = ESTADO_INICIAR_FASE_1;   break; // Jogar
+            case 0: *estado = ESTADO_INICIAR_FASE_2;   break; // Jogar
             case 1: *estado = ESTADO_HISTORIA; break; // História
             case 2: *estado = ESTADO_VOLUME;   break; //Volume
             case 3: *estado = ESTADO_CREDITOS; break; // Créditos

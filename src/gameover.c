@@ -16,6 +16,7 @@ static float fade = 0.0f;
 //importa os sprites da pose de derrota 
 extern Texture2D sprite_jogador_corpo;
 extern Rectangle jogador_morto[2];
+extern Estados_Jogo estado_anterior; // extern para ser usado em outras fontes  
 
 void Iniciar_GameOver(void) {
     // Reseta variáveis quando entra na tela
@@ -50,14 +51,15 @@ void Atualizar_GameOver(Estados_Jogo *estado, Jogador *jogador) {
     if(IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_SPACE)) {
         switch(opcao) {
             case 0: // Reiniciar fase
-               
                 IniciarJogador(jogador, (Vector2){100, 600});
                 IniciarTiros();
                 IniciarBaterias();
-                IniciarInimigos();
+
+                if(estado_anterior == ESTADO_INICIAR_FASE_1){
+                    IniciarInimigos();
+                }
                 
-            
-                *estado = ESTADO_INTRO_FASE_1;
+                *estado = estado_anterior;
                 break;
             case 1: // Menu
         
@@ -83,7 +85,7 @@ void Desenhar_GameOver(Jogador *jogador) {
     
     // Sombra
     DrawText(texto_principal, 
-             GetScreenWidth()/2 - altura_texto/2 + 3, 
+             GetScreenWidth()/2 - altura_texto/2 , 
              103, 
              tamanho_fonte, 
              Fade(BLACK, 0.6f * fade));
@@ -97,15 +99,15 @@ void Desenhar_GameOver(Jogador *jogador) {
     
     // Animacao da pose de derrota
     Vector2 pos_morte = {
-        GetScreenWidth() / 2.0f - 200,
-        200
+        GetScreenWidth() / 2.0f - 60,
+        250
     };
     DrawTextureRec(sprite_jogador_corpo, jogador_morto[frame_atual_morte], pos_morte, Fade(WHITE, fade));
     
     // estatisticas
    
     DrawText(TextFormat("Baterias Coletadas: %d", jogador->total_baterias), 
-             GetScreenWidth()/2 - 180, 510, 28, 
+             GetScreenWidth()/2 - 140, 510, 28, 
              Fade(SKYBLUE, fade));
     
     // Menu

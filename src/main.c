@@ -10,6 +10,8 @@
 #include "tiros.h"
 #include "baterias.h"
 #include "inimigos.h"
+#include "fase_1.h"
+#include "fase_2.h"
 
 int main(void){
 
@@ -17,9 +19,7 @@ int main(void){
         //tela (tela cheia de 24")
         const int largura_tela = 1920;
         const int altura_tela = 1080;
-        //const int largura_tela = 1366;
-        //const int altura_tela = 768;
-
+ 
         //pre configuracoes do jogador
         Jogador jogador;
         Vector2 Posicao_Inicial_Jogador = (Vector2){400, altura_tela};
@@ -36,9 +36,9 @@ int main(void){
    
     //inicializacao
     IniciarJogador(&jogador, Posicao_Inicial_Jogador);
-    IniciarInimigos();
     IniciarTiros();
     IniciarBaterias();
+    IniciarInimigos();
     Iniciar_Gestor_Audio();
     Transicao_musica(estado_atual); //inicia a musica quando no ocorreu transicao ainda
     
@@ -84,10 +84,13 @@ int main(void){
     EndDrawing();
 }
 
+ 
     //encerramento
     Encerrar_Menu();
     DescarregarAssets();
     DescarregarBateria();
+    Descarregar_Fase_1();
+    Descarregar_Fase_2();
     Encerrar_Gestor_Audio();
     CloseWindow();
     return 0;

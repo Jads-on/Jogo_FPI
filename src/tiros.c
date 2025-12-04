@@ -216,6 +216,10 @@ void Tiro_Imagem_Jogador(){
     } 
 }
 
-void DescarregarExplosao(){
-    UnloadTexture(explosao);
+void Desativar_Tiros(){
+    for(int idx = 0; idx < MAX_BALAS; idx++){ // procura quais balas estao aivas e atualiza
+        if(balas[idx].ativo){
+            balas[idx].ativo = false;
+        }
+    }
 }

@@ -28,21 +28,26 @@ extern Estados_Jogo estado_anterior; // extern para ser usado em outras fontes
 static Texture2D textura_mapa;
 static Rectangle frame_mapa[QTD_TELAS];   
 static Vector2 Posicao_Mapa;   
-int idx_area_atual = 0;
+int idx_area_atual;
 
 //flags
-static bool drone_spawnou[QTD_TELAS] = { false, false, false, false, false };
+static bool drone_spawnou[QTD_TELAS];
 static bool tocou_som_vida_baixa = false;
 static float timer_mensagem_fase = 0.0f,
              fade = 0.0f; 
 
-void Iniciar_Fase_1(Estados_Jogo *estado){// careega o mapa e os inimigos
+void Iniciar_Fase_1(Estados_Jogo *estado){// carrega o mapa e os inimigos
 
     //carrega o mapa
+    idx_area_atual = 0;
     textura_mapa = LoadTexture("assets/sprites/mapas/Fase_1/mapa_fase_1.png");
     Posicao_Mapa = (Vector2){0,0};
 
    int idx = 0;
+
+   for(int i = 0; i < QTD_TELAS; i++){
+    drone_spawnou[i] = false;
+   }
     
     for(int linha = 0; linha < QTD_LINHAS_SPRITE_MAPA; linha++){
         
@@ -54,15 +59,11 @@ void Iniciar_Fase_1(Estados_Jogo *estado){// careega o mapa e os inimigos
                 (float)LARGURA_FRAME_MAPA, 
                 (float)ALTURA_FRAME_MAPA
             };
-
-            
             idx++; 
         }
     }
     
-
     fade = 0.0f;
-
     *estado = ESTADO_INTRO_FASE_1; //ao finalizar segue para a fase 1
 
 }
@@ -110,7 +111,7 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
         TocarSom(SOM_MORTE_JOGADOR);
         idx_area_atual = 0;
 
-        //resreta a flag dos drones
+        //reseta a flag dos drones
         for(int idx = 0; idx < QTD_TELAS; idx++){
             drone_spawnou[idx] = false;
         }
@@ -118,6 +119,8 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
         Desativar_Baterias();
         Desativar_Inimigos();
         Desativar_Drone();
+        Desativar_Tiros();
+        estado_anterior = ESTADO_INTRO_FASE_1;
         *estado = ESTADO_GAMEOVER;
     }
     
@@ -125,7 +128,7 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
     if(idx_area_atual == 4){
         if((jogador->hitbox.x >= INICIO_SAIDA) &&(jogador->hitbox.x <= FIM_SAIDA)){
             TocarSom(SOM_MISSAO_COMPLETA);
-            *estado = ESTADO_INICIAR_FASE_2;
+            *estado = ESTADO_ENCERRAR_FASE_1;
         }
     }
 
@@ -133,6 +136,8 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
     if(TodosInimigosMortos()){
         if(jogador->posicao.x > LARGURA_TELA){
             Desativar_Baterias(); //desativa baterias não coletadas
+            Desativar_Tiros();
+            
             idx_area_atual++;
             
             CarregarInimigosDaTela(idx_area_atual);
@@ -195,6 +200,12 @@ void Atualizar_Fase_1(Estados_Jogo *estado, Jogador *jogador){
             TocarSom(SOM_MENU_SELECT);
         }
     
+}
+
+void Proxima_Fase(Estados_Jogo *estado){
+    if(IsKeyPressed(KEY_ENTER)){
+        *estado = ESTADO_INICIAR_FASE_2;
+    }
 }
 
 // ============================= DESENHO ======================================
@@ -311,10 +322,5 @@ void Descarregar_Fase_1(){
 
     DescarregarTexturasInimigos();
     Descarregar_Drone();
-    Desativar_Baterias();
-    Desativar_Inimigos();
-    Desativar_Drone();
     UnloadTexture(textura_mapa);
-    
-
 }

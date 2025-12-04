@@ -4,6 +4,8 @@
 #include "menu.h"
 #include "fase_1.h"
 #include "fase_2.h"
+#include "inimigos.h"
+#include "drone.h"
 #include "gameover.h"
 #include "creditos.h"
 #include "historia.h"
@@ -32,13 +34,19 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
     case ESTADO_FASE_1:
         Atualizar_Fase_1(estado, jogador);
         break;
+    
+    case ESTADO_ENCERRAR_FASE_1:
+        Proxima_Fase(estado);
+        break;
 
     case ESTADO_INICIAR_FASE_2:
         Iniciar_Fase_2(estado);
         break;
 
     case ESTADO_FASE_2:
-        Descarregar_Fase_1();
+        Desativar_Baterias();
+        Desativar_Inimigos();
+        Desativar_Drone();
         Atualizar_Fase_2(estado, jogador);
         break;
     
@@ -63,6 +71,8 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
         DescarregarAssets();
         DescarregarBateria();
         Descarregar_Fase_1();
+        Descarregar_Fase_2();
+        Descarregar_Drone();
         break;
 
     default:
@@ -86,7 +96,7 @@ void Desenhar_Jogo(Estados_Jogo estado, Jogador jogador){
         Desenhar_Mensagem_Fase_1();
         break;
 
-    case ESTADO_INICIAR_FASE_2:
+    case ESTADO_ENCERRAR_FASE_1:
         Desenhar_Encerramento_Fase_1();
         break;
 
