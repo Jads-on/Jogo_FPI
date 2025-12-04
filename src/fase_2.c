@@ -41,6 +41,7 @@ void Atualizar_Fase_2(Estados_Jogo *estado, Jogador *jogador){
     Atualizar_Boss(&juggernaut, jogador->posicao, 1.0);
     AtualizarTiros();
     ColisaoBalaBateria(jogador);
+    ColisaoBalaBoss(&juggernaut);
 
     if(jogador->vida <= 0){
         TocarSom(SOM_MORTE_JOGADOR);
@@ -51,13 +52,13 @@ void Atualizar_Fase_2(Estados_Jogo *estado, Jogador *jogador){
      if(jogador->posicao.x < 0){
         jogador->posicao.x = 0;
     }
-    if((jogador->posicao.x > LARGURA_TELA - 100  && !TodosInimigosMortos())){
+    if(jogador->posicao.x > LARGURA_TELA - 100 ){
         jogador->posicao.x = LARGURA_TELA - 100;
     }
 
     //edicao do volume no meio do jogo (substitui um pause)
     if(IsKeyPressed(KEY_V)){  
-        estado_anterior = ESTADO_FASE_1; //salva o estado anterior
+        estado_anterior = ESTADO_FASE_2; //salva o estado anterior
         *estado = ESTADO_VOLUME;
         TocarSom(SOM_MENU_SELECT);
     }
@@ -95,6 +96,7 @@ void Desenhar_Mensagem_Fase_2(){
 void DesenharFase2(Jogador jogador){
     DrawTexture(mapa, 0, 0, WHITE);
 
+    
     // Desenho do Jogador
     JogadorImagem(jogador);
     Boss_Imagem(juggernaut);

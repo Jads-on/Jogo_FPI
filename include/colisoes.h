@@ -6,6 +6,7 @@
 #include "tiros.h"
 #include "inimigos.h"
 #include "baterias.h"
+#include "boss.h"
 
 void ColisaoMapa();
 
@@ -16,5 +17,7 @@ void Aplicar_Dano_em_Area(Vector2 centro_da_explosao, float raio, int dano);
 void ColisaoBalaInimigo();
         
 void ColisaoBalaInimigoJogador(Jogador *jogador);
+
+void ColisaoBalaBoss(Boss *boss);
 
 #endif

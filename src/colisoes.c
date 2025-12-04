@@ -25,7 +25,7 @@ void Aplicar_Dano_em_Area(Vector2 centro_da_explosao, float raio, int dano){
 
     //afeta INIMIGOS
     for(int i = 0; i < MAX_INIMIGOS; i++) { 
-        if (spiderlith[i].ativo) {
+        if (spiderlith[i].ativo || drone_ativo){
 
             // Verifica se a hitbox do inimigo está dentro do círculo da explosão
             if (CheckCollisionCircleRec(centro_da_explosao, raio, spiderlith[i].hitbox)){
@@ -104,7 +104,7 @@ void ColisaoBalaInimigo(){
                             Aplicar_Dano_em_Area(balas[i].posicao, 75, balas[i].dano);
                            
                         } 
-                        else if (balas[i].tipo != Bala_Perfurante) { 
+                        else if (balas[i].tipo != Bala_Perfurante ) { 
 
                             balas[i].ativo = false; 
 
@@ -116,16 +116,16 @@ void ColisaoBalaInimigo(){
     }
 }
 
-void ColisaoBalaBoss(Boss boss){
-    for(int i = 0; i < MAX_BALAS; i++){ // Balas dos INIMIGOS
-        if (balas[i].ativo) {
+void ColisaoBalaBoss(){
+
+    for(int i = 0; i < MAX_BALAS; i++){ // Balas 
+        if (balas[i].ativo && !balas[i].explodir) {
             
-            // Verifica colisão com a hitbox do jogador
-            if (CheckCollisionRecs(balas[i].hitbox, boss.hitbox)){
+            // Verifica colisão 
+            if (CheckCollisionRecs(balas[i].hitbox, juggernaut.hitbox)){
                 
-                // 1. Dano ao Jogador
-                boss.vida -= balas[i].dano;
-                
+                juggernaut.vida -= balas[i].dano;
+
                 //timer da explosão
                 if (balas[i].tipo == Bala_Explosiva) {
 
@@ -137,9 +137,27 @@ void ColisaoBalaBoss(Boss boss){
                     Aplicar_Dano_em_Area(balas[i].posicao, 75, balas[i].dano);
                            
                 } 
-                else if((balas[i].tipo != Bala_Perfurante) && boss.vida <= 150){ 
-                    balas[i].ativo = false; 
+                if(balas[i].tipo != Bala_Explosiva){
+                    balas[i].ativo = false;
                 }
+            }
+        }
+    }
+}
+
+void ColisaoBalaInimigoJogador(Jogador *jogador){
+    for(int i = 0; i < MAX_BALAS_INIMIGOS; i++){ // Balas dos INIMIGOS
+        if (balasInimigos[i].ativo) {
+            
+            // Verifica colisão com a hitbox do jogador
+            if (CheckCollisionRecs(balasInimigos[i].hitbox, jogador->hitbox)){
+                
+                // 1. Dano ao Jogador
+                jogador->vida -= balasInimigos[i].dano;
+                TocarSom(SOM_DANO_JOGADOR); 
+
+                // 2. Bala do inimigo é destruída
+                balasInimigos[i].ativo = false;
             }
         }
     }

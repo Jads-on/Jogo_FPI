@@ -48,6 +48,8 @@ typedef struct{
 
 }Boss;
 
+extern Boss juggernaut;
+
 void Iniciar_Boss(Boss *boss, Vector2 Posicao_Inicial_Boss);
 
 void Atualizar_Boss(Boss *boss, Vector2 Posicao_Jogador, float delta);

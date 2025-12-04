@@ -44,7 +44,6 @@ void Atualizar_Jogo(Estados_Jogo *estado, Jogador *jogador){
         break;
 
     case ESTADO_FASE_2:
-        Desativar_Baterias();
         Desativar_Inimigos();
         Desativar_Drone();
         Atualizar_Fase_2(estado, jogador);
